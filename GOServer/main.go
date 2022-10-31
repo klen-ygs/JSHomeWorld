@@ -1,7 +1,14 @@
 package main
 
-import _ "github.com/go-sql-driver/mysql"
+import (
+	"GOServer/Serverlves"
+	"fmt"
+)
 
 func main() {
-
+	err := Serverlves.Engine.Run(":8000")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 }
