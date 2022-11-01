@@ -34,15 +34,15 @@
                     <table>
                         <tr>
                             <td><label>手机号</label></td>
-                            <td><input type="text" v-model="phone" class="loginInput"></td>
+                            <td><input type="text" v-model="phone" class="loginInput" ref="loginPhone" @blur="loginPhoneTest()"></td>
                         </tr>
                         <tr>
                             <td><label>密码</label></td>
-                            <td><input type="password" v-model="password" class="loginInput"></td>
+                            <td><input type="password" v-model="password" class="loginInput" ref="loginPassword" @blur="loginPasswordTest()"></td>
                         </tr>
                     </table>
-                    <button id="loginButton">登录</button>
                 </form>
+                <button id="loginButton" @click="login()">登录</button>
             </div>
         </div>
         <div ref="cover" id="cover">
@@ -56,6 +56,7 @@
 
 <script>
 import axios from 'axios'
+
 export default {
     data(){
         return{
@@ -68,7 +69,22 @@ export default {
         }
     },
     methods: {
+        resetAll() {
+            this.phone = ""
+            this.name = ""
+            this.password = ""
+            this.password1 = ""
+            this.$refs.registerPhone.style["border"] = ''
+            this.$refs.registerName.style["border"] = ''
+            this.$refs.registerPassword.style["border"] = ''
+            this.$refs.registerPassword1.style["border"] = ''
+            this.$refs.loginPhone.style["border"] = ''
+            this.$refs.loginPassword.style["border"] = ''
+        },
         register() {
+            if (!(this.registerPhoneTest() && this.registerNameTest() && this.registerPasswordTest() && this.registerPassword1Test())) {
+                return
+            }
             axios({
                 method:'Post',
                 url:"http://127.0.0.1:8000/register",
@@ -77,16 +93,31 @@ export default {
                      name:this.name,
                      password:this.password,
                  }
+            }).then(res => {
+                if (res.data.register == true) {
+                    this.toLogin()
+                }
             })
+        },
+        login(){
+            if (!(this.loginPhoneTest() && this.loginPasswordTest())) {
+                return
+            }
+            axios({
+                method:"Post",
+                url:"http://127.0.0.1:8000/login",
+                data:{
+                    phone: this.phone,
+                    password: this.password
+                }
+            }).then(res => {
 
-            // axios.post("http://127.0.0.1:8000/register",
-            // {phone:"21212"},
-            // ).then(res=>{   
-            //     console.log(res)
-            // })
+                console.log(res.data)
+            })
 
         },
         toRegister() {
+            this.resetAll()
             this.logining = !this.logining
             this.registing = !this.registing
             let pos = 0
@@ -110,6 +141,7 @@ export default {
             })
         },
         toLogin() {
+            this.resetAll()
             this.logining = !this.logining
             this.registing = !this.registing
             let pos = 390
@@ -135,33 +167,60 @@ export default {
         registerPhoneTest() {
             if (this.phone.length != 11) {
                 this.$refs.registerPhone.style["border"] = "2px groove red"
+                return false
             } else {
                 this.$refs.registerPhone.style["border"] = ''
+                return true
             }
         },
         registerNameTest() {
             let rex = /^[a-zA-Z0-9]{1,10}$/
             if (rex.test(this.name)) {
                 this.$refs.registerName.style["border"] = ''
+                return true
             } else {
                 this.$refs.registerName.style["border"] = "2px groove red"
+                return false
             }
         },
         registerPasswordTest() {
             let rex = /^[a-zA-Z0-9]{6,15}$/
             if (rex.test(this.password)) {
                 this.$refs.registerPassword.style["border"] = ''
+                return true
             } else {
                 this.$refs.registerPassword.style["border"] = "2px groove red"
+                return false
             }
         },
         registerPassword1Test() {
             if (this.password != this.password1) {
                 this.$refs.registerPassword1.style["border"] = "2px groove red"
+                return false
             } else {
                 this.$refs.registerPassword1.style["border"] = ''
+                return true
             }
-        }
+        },
+        loginPhoneTest() {
+            if (this.phone.length != 11) {
+                this.$refs.loginPhone.style["border"] = "2px groove red"
+                return false
+            } else {
+                this.$refs.loginPhone.style["border"] = ''
+                return true
+            }
+        },
+        loginPasswordTest() {
+            let rex = /^[a-zA-Z0-9]{6,15}$/
+            if (rex.test(this.password)) {
+                this.$refs.loginPassword.style["border"] = ''
+                return true
+            } else {
+                this.$refs.loginPassword.style["border"] = "2px groove red"
+                return false
+            }
+        },
     }
 }
 </script>
@@ -227,7 +286,18 @@ export default {
     height: 30px;
     width: 200px;
     border-radius: 12px;
-    border: 2px groove gray;
+    border: 2px groove rgb(228, 213, 189);
+}
+
+.loginInput:focus {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    height: 30px;
+    width: 200px;
+    border-radius: 12px;
+    border: 2px groove rgb(241, 224, 197);
+    box-shadow: inset 0 0 5px gray;
 }
 
 #registerButtonDiv {
