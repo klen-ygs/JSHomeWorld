@@ -106,13 +106,16 @@ export default {
             axios({
                 method:"Post",
                 url:"http://127.0.0.1:8000/login",
+                withCredentials: true,
                 data:{
                     phone: this.phone,
                     password: this.password
-                }
+                },
             }).then(res => {
-
-                console.log(res.data)
+                console.log(document.cookie)
+                if (res.data.Request == true) {
+                    this.$router.push({name:"SelectPage",params:{Phone:this.phone}})
+                }
             })
 
         },
@@ -269,6 +272,11 @@ export default {
     height: 450px;
     position: absolute;
     background-color: rgb(236, 223, 223);
+    background-image: url(../assets/weichat.png);
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: center;
+    background-size: auto;
 }
 
 #registerPage {
