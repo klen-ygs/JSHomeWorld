@@ -13,7 +13,7 @@ func init() {
 		err := context.BindJSON(&shopText)
 		if err != nil {
 			context.JSON(http.StatusOK, response{
-				request: false,
+				Request: false,
 				Err:     MODLEERR,
 			})
 			return
@@ -21,7 +21,7 @@ func init() {
 		err = DB.Where("id = ?", shopText.Id).First(&shopText).Error
 		if err != nil {
 			context.JSON(http.StatusOK, response{
-				request: false,
+				Request: false,
 				Err:     NOTFIND,
 			})
 			return

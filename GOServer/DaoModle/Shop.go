@@ -3,10 +3,9 @@ package DaoModle
 // Shop 商店模型
 type Shop struct {
 	Id            uint64
+	Name          string
 	ShopTitleText string
-	TitleImageId  uint64
-	ShowImageIds  string //json
-	ShowTextId    uint64
+	Text          string
 	Having        uint64
-	price         int16
+	Price         int16
 }

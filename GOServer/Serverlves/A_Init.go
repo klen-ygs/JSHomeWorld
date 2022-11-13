@@ -1,6 +1,10 @@
 package Serverlves
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+	"reflect"
+	"strconv"
+)
 import _ "github.com/go-sql-driver/mysql"
 import "github.com/jinzhu/gorm"
 
@@ -13,11 +17,18 @@ const (
 	NONE        = ""
 	MODLEERR    = "ModelErr"
 	NOTFIND     = "NotFind"
+	INSERTERR   = "InsertErr"
+)
+
+var (
+	phoneMap          = make(map[uint64]string)
+	loginCount uint64 = 1
+	countMap          = make(map[string]uint64)
 )
 
 // response 处理回复消息
 type response struct {
-	request bool
+	Request bool
 	Err     string
 }
 
@@ -26,13 +37,29 @@ func accessOrigin(url string) {
 	Engine.OPTIONS(url, func(context *gin.Context) {
 		context.Writer.Header().Add("Access-Control-Allow-Headers", "Content-Type,XFILENAME,XFILECATEGORY,XFILESIZE")
 		context.Writer.Header().Add("Access-Control-Allow-Origin", "http://localhost:8080")
+		context.Writer.Header().Add("Access-Control-Allow-Credentials", "true")
+		context.Writer.Header().Add("Access-Control-Allow-Methods", "true")
 	})
 
 }
 
+func getPhone(ctx *gin.Context, value interface{}) {
+	elem := reflect.ValueOf(value).Elem()
+	phone := elem.FieldByName("Phone")
+	if phone.String() != "" {
+		return
+	}
+	cookie, err := ctx.Cookie("login")
+	if err != nil {
+		return
+	}
+	parseUint, _ := strconv.ParseUint(cookie, 10, 64)
+	phone.SetString(phoneMap[parseUint])
+}
+
 func init() {
 	Engine = gin.Default()
-	db, err := gorm.Open("mysql", "root:28885/YGSnizhan@(127.0.0.1:3306)/vue_shop")
+	db, err := gorm.Open("mysql", "root:28885/YGSnizhan@(127.0.0.1:3306)/vue_shop?charset=utf8mb4")
 	DB = db
 	if err != nil {
 		panic(err)

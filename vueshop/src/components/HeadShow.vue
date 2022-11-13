@@ -1,18 +1,86 @@
 <template>
   <div id="HeadBack">
-      <div id="HeadImage">
-          <!-- <img :src="headSrc"> -->
+     
+      <div id="ShopCar" @click="toList()" @mouseenter="enterLists()" @mouseleave="leaveLists()">
       </div>
-      <a href="#">注销</a>
+      <div id="UserDiv">
+        欢迎您 <p id="tag" >{{ Name }}</p> {{"  "}} 手机号： <p id="tag">{{ Phone }}</p>
+      </div>
+      <button @click="logout()" id="logoutButton" >注销</button>
+      <LittleShopList v-show="ShowList" ref="littleList"/>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
+import LittleShopList from './LittleShopList.vue'
 export default {
+    mounted() {
+        axios.get( "http://127.0.0.1:8000/getUserInfo",
+            {
+                withCredentials: true
+            }
+        ).then(res => {
+            this.Name = res.data.Name
+            this.Phone = res.data.Phone
+        })
+        this.$refs.littleList.addMouseEnter(()=> {
+            console.log(4)
+            this.enterList = true
+        })
+        this.$refs.littleList.addMouseLeave( ()=> {
+            this.leaveLists()
+        } )
+    },
     data() {
         return{ 
             headSrc:"",
+            Name:"",
+            Phone:"",
+            ShowList: false,
+            enterList: false,
         }
+    },
+    methods: {
+        toList() {
+           let url = this.$router.resolve({name:"ShopListPage"})
+            window.open(url.href, "_blank")
+
+        },
+        logout() {
+            axios({
+                url:"http://127.0.0.1:8000/login",
+                method:"Delete",
+                data:{
+                    Phone: this.Phone
+                },
+                withCredentials:true,
+            }).then( () => {
+                this.$router.replace({path:"/"})
+            })
+
+        },
+        enterLists() {
+            this.enterList = true
+            setTimeout(() => {
+                if (this.enterList == true) {
+                    this.ShowList = true
+                    this.$refs.littleList.show()
+                }
+            },400)
+
+        },
+        leaveLists() {
+            this.enterList = false
+            setTimeout( ()=> {
+                if (this.enterList == false) {
+                    this.ShowList = false
+                }
+            },500 )
+        }
+    },
+    components: {
+        LittleShopList,
     }
 }
 </script>
@@ -24,9 +92,65 @@ export default {
 }
 
 #HeadBack {
+    box-shadow: 0px 0px 3px gray;
+    top: 0;
+    margin-top: 0;
+    position: fixed;
+    width: 100%;
     height: 70px;
     background-color: rgb(221, 234, 245);
-    box-shadow: inset -1 -1 5px black;
 }
+
+#tag {
+    display: inline-block;
+    color: rgb(186, 70, 46);
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}
+
+#UserDiv {
+    display: inline-block;
+    vertical-align: middle;
+    margin-top:15px;
+    margin-left: 20px;
+}
+
+#ShopCar {
+    margin-left: 70%;
+    cursor: pointer;
+    margin-top: 15px;
+    vertical-align: middle;
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    background-image: url(../assets/shopcar.png);
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+
+#logoutButton {
+    margin-left: 20px;
+    cursor: pointer;
+    vertical-align: middle;
+    margin-top: 20px;
+    width: 55px;
+    height: 25px;
+    border-radius: 15px;
+    background-color: rgb(243, 148, 148);
+    border: 0px;
+    box-shadow: 0 0 1 grey;
+}
+
+#logoutButton:hover {
+    margin-left: 20px;
+    vertical-align: middle;
+    margin-top: 20px;
+    width: 55px;
+    height: 25px;
+    border-radius: 15px;
+    background-color: rgb(216, 139, 139);
+    border: 0px;
+    box-shadow: 0 0 1 grey;
+}
+
 
 </style>
