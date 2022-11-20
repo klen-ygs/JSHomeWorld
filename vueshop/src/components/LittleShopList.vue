@@ -1,7 +1,7 @@
 <template>
   <div id="littleList" @mouseenter="mouseEnter()" @mouseleave="mouseLeave()" >
         <h3 id="addListTitle">收藏</h3>
-        <div id="listsDiv" onmousewheel="wheel()">
+        <div id="listsDiv">
             <LittleShop v-for="shop in lists" :key="shop" :ShopId="Number(shop)"/>
         </div>
   </div>

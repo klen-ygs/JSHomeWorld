@@ -1,13 +1,26 @@
 <template>
   <div>
       <HeadShow/>
-      <div id="box"></div>
+      <div style="height:150px"></div>
+      <div id="pay">
+        <div style=" height: 25px"></div>
+        <span style="font-size: 20px;margin-left: 10%;height: 20px;">
+          总计：
+        </span>
+        <span style="font-size: 20px">
+          ￥{{$store.state.AllPrice}}
+        </span>
+        <span style="margin-left: 30px">
+          <button id="payButton" ref="payButton" @mouseenter="moveInPayButton()" @mouseleave="leavePayButton()" @click="openPay()">支付</button>
+        </span>
+      </div>
       <div id="ListDiv">
         <ShopTip v-for="tip in shopLists" :key="tip" :Phone="Phone" :ShopId="Number(tip)"/>
       </div>
       <div v-show="showMessage" ref="listMessage" id="listMessage">
         删除成功
       </div>
+      <PayWidget v-show="showPay" ref="Pay" :closeEvet="PayClose"></PayWidget>
   </div>
 </template>
 
@@ -17,6 +30,7 @@ import axios from 'axios'
 
 import ShopTip from '../components/ShopTip'
 import HeadShow from '../components/HeadShow.vue'
+import PayWidget from '@/components/PayWidget.vue'
 export default {
   name:"ShopListPage",
   mounted() {
@@ -37,7 +51,8 @@ export default {
     return {
       shopLists:[],
       Phone:"",
-      showMessage: false
+      showMessage: false,
+      showPay: false,
     }
 
   },
@@ -61,13 +76,26 @@ export default {
             },250)
           }
         },16.7)
+    },
+    openPay() {
+      this.showPay = true
+      this.$refs.Pay.showThisPay()
+    },
+    PayClose() {
+      this.showPay = false
+    },
+    moveInPayButton() {
+      this.$refs.payButton.style["background-color"] = "rgb(130, 185, 255)"
+
+    },
+    leavePayButton() {
+      this.$refs.payButton.style["background-color"] = "rgb(109, 165, 244)"
     }
-    
   },
   components: {
     ShopTip,
-    HeadShow
-
+    HeadShow,
+    PayWidget,
   }
 }
 </script>
@@ -75,7 +103,7 @@ export default {
 <style>
 
 #ListDiv {
-  margin-top: 5px;
+  margin-top: 0px;
   height: 1000px;
   width: 90%;
   margin-left: 5%;
@@ -94,5 +122,25 @@ export default {
     display: inline-block;
     box-shadow: 0px 0px 4px grey;
 }
+
+#pay {
+  width: 500px;
+  height: 80px;
+  margin-left: 5%;
+  box-shadow: 0 0 4px grey;
+  margin-bottom: 0px;
+}
+
+#payButton {
+  cursor: pointer;
+  background-color: rgb(109, 165, 244);
+  height: 30px;
+  width: 70px;
+  border-radius: 20px;
+  box-shadow: 0 0 2px gray;
+  outline: none;
+  border: 0 black;
+}
+
 
 </style>

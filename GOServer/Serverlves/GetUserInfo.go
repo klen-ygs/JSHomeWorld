@@ -21,8 +21,16 @@ func init() {
 			return
 		}
 		count, _ := strconv.ParseUint(cookie, 10, 64)
+		phoneLoad, ok := phoneMap.Load(count)
+		if !ok {
+			context.JSON(http.StatusOK, response{
+				Request: false,
+				Err:     "CookieFail",
+			})
+			return
+		}
 		user := DaoModle.User{
-			Phone:    phoneMap[count],
+			Phone:    phoneLoad.(string),
 			Name:     "",
 			Password: "",
 		}

@@ -1,7 +1,7 @@
 <template>
   <div id="HeadBack">
      
-      <div id="ShopCar" @click="toList()" @mouseenter="enterLists()" @mouseleave="leaveLists()">
+      <div id="ShopCar" ref="ShopCar" @click="toList()" @mouseenter="enterLists()" @mouseleave="leaveLists()">
       </div>
       <div id="UserDiv">
         欢迎您 <p id="tag" >{{ Name }}</p> {{"  "}} 手机号： <p id="tag">{{ Phone }}</p>
@@ -25,7 +25,6 @@ export default {
             this.Phone = res.data.Phone
         })
         this.$refs.littleList.addMouseEnter(()=> {
-            console.log(4)
             this.enterList = true
         })
         this.$refs.littleList.addMouseLeave( ()=> {
@@ -39,6 +38,8 @@ export default {
             Phone:"",
             ShowList: false,
             enterList: false,
+            bigChaning: false,
+            smallChaning: false,
         }
     },
     methods: {
@@ -62,10 +63,24 @@ export default {
         },
         enterLists() {
             this.enterList = true
+            let _this = this
             setTimeout(() => {
-                if (this.enterList == true) {
+                console.log(this.bigChaning)
+                if (this.enterList == true && this.bigChaning == false) {
+                    this.bigChaning = true
                     this.ShowList = true
                     this.$refs.littleList.show()
+                    let size = 30
+                    let ShopCar = this.$refs.ShopCar
+                    this.smallChaning = false
+                    setTimeout( function shopCarBig() {
+                        size++
+                        if (size <= 40 && _this.enterList == true) {
+                            ShopCar.style["width"] = String(size) + "px"
+                            ShopCar.style["height"] = String(size) + "px"
+                            setTimeout(shopCarBig, 5)
+                        }
+                    }, 5)
                 }
             },400)
 
@@ -73,8 +88,21 @@ export default {
         leaveLists() {
             this.enterList = false
             setTimeout( ()=> {
-                if (this.enterList == false) {
+                if (this.enterList == false && this.smallChaning == false) {
+                    this.smallChaning = true
                     this.ShowList = false
+                    let _this = this
+                    let size = 40
+                    let ShopCar = this.$refs.ShopCar
+                    this.bigChaning = false
+                    setTimeout( function shopCarSamll() {
+                        size--
+                        if (size >= 30 && _this.enterList == false) {
+                            ShopCar.style["width"] = String(size) + "px"
+                            ShopCar.style["height"] = String(size) + "px"
+                            setTimeout(shopCarSamll, 5)
+                        }
+                    }, 5)
                 }
             },500 )
         }
@@ -99,6 +127,7 @@ export default {
     width: 100%;
     height: 70px;
     background-color: rgb(221, 234, 245);
+    z-index: 99;
 }
 
 #tag {

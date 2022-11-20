@@ -2,6 +2,7 @@ package Serverlves
 
 import (
 	"GOServer/DaoModle"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -16,8 +17,8 @@ type getShopRequest struct {
 }
 
 func getFirstPage(context *gin.Context) {
-	ShopArr := make([]DaoModle.Shop, 20)
-	DB.Limit(20).Find(&ShopArr)
+	var ShopArr []DaoModle.Shop
+	DB.Limit(15).Find(&ShopArr)
 	context.JSON(200, &ShopArr)
 }
 
@@ -41,14 +42,15 @@ func init() {
 			context.JSON(http.StatusOK, &shop)
 			return
 		}
-		ShopArr := make([]DaoModle.Shop, 15)
+		var ShopArr []DaoModle.Shop
 		request.SearchWord = "%" + request.SearchWord + "%"
+		fmt.Println(request.FindMethod)
 		if request.FindMethod == "Next" {
-			DB.Where("shop_title_text like ? and id > ?", request.SearchWord, request.MaxId).Find(&ShopArr)
+			DB.Where("shop_title_text like ? and id > ?", request.SearchWord, request.MaxId).Limit(15).Find(&ShopArr)
 		} else if request.FindMethod == "Last" {
-			DB.Where("shop_title_text like ? and id < ?", request.SearchWord, request.MinId).Find(&ShopArr)
+			DB.Where("shop_title_text like ?", request.SearchWord).Limit(15).Offset(15).Find(&ShopArr)
 		} else {
-			DB.Where("shop_title_text like ?", request.SearchWord).Find(&ShopArr)
+			DB.Where("shop_title_text like ?", request.SearchWord).Limit(15).Find(&ShopArr)
 		}
 		context.JSON(http.StatusOK, &ShopArr)
 	})
