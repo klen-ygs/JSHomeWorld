@@ -1,9 +1,7 @@
 <template>
   <div id="ShopWindowsBack" @click="JumpToShop()">
       <div id="imageDiv"> 
-        <a href="#">
           <img ref="ShopImage" id="ShopImg" width="90%" />
-        </a>
       </div>
       <div id="info">
         <p id="titleText">{{ ShopTitleText }}</p>
@@ -74,6 +72,8 @@ export default {
 #titleText {
     color: rgb(146, 136, 136);
     font-size: 10;
+    overflow: hidden;
+    max-height: 20px;
 }
 
 #ShopWindowsBack:hover {
@@ -99,7 +99,7 @@ export default {
     margin-top: 5%;
     margin-left: 6%;
     height: 60%;
-    margin-bottom: 5%;
+    margin-bottom: 2%;
 }
 
 #price {

@@ -36,6 +36,10 @@
               <td><input type="text" v-model.number="having" /></td>
           </tr>
           <tr>
+              <td><label>店内宣传视频</label></td>
+              <td><input type="file" @change="addVideo($event)"></td>
+          </tr>
+          <tr>
               <img ref="Image" />
           </tr>
       </table>
@@ -58,6 +62,7 @@ export default {
             text:"",
             titleImageData: null,
             imagesData: null,
+            videoData: null,
         }
     },
     methods: {
@@ -86,20 +91,27 @@ export default {
             }).then( res => {
                 let shopId = res.data.id
                 let data = new FormData()
-                console.log(this.titleImageData)
-                data.append("ImageData",this.titleImageData)
-                data.append("flag","true")
-                data.append("shopId",shopId)
-                axios.post("http://127.0.0.1:8000/addImage",
-                data,
-                 )
+                if (this.titleImageData != null) {
+                    data.append("ImageData",this.titleImageData)
+                    data.append("flag","true")
+                    data.append("shopId",shopId)
+                    axios.post("http://127.0.0.1:8000/addImage",
+                    data,
+                    )
+                }
                  let imageDatas = new FormData()
                  imageDatas.append("flag","false")
                  imageDatas.append("shopId",shopId)
-                 for (let a = 0; a < this.imagesData.length; a++) {
-                     imageDatas.set("ImageData",this.imagesData[a])
-                     axios.post("http://127.0.0.1:8000/addImage",imageDatas)
-                 }
+                 if (this.imagesData != null) {
+                    for (let a = 0; a < this.imagesData.length; a++) {
+                        imageDatas.set("ImageData",this.imagesData[a])
+                        axios.post("http://127.0.0.1:8000/addImage",imageDatas)
+                    }
+                }
+                 let videoData = new FormData()
+                 videoData.append("video", this.videoData)
+                 videoData.append("ShopId", shopId)
+                 axios.post("http://127.0.0.1:8000/video/addVideo", videoData)
             } )
 
         },
@@ -108,6 +120,9 @@ export default {
         },
         addImages(event) {
             this.imagesData = event.target.files
+        },
+        addVideo(event) {
+            this.videoData = event.target.files[0]
         }
     }
 }

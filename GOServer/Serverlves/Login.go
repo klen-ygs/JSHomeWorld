@@ -25,8 +25,8 @@ func init() {
 			return
 		}
 		context.SetCookie("login", strconv.FormatUint(loginCount, 10), 100000, "/", "http://localhost:8080", true, false)
-		phoneMap[loginCount] = User.Phone
-		countMap[User.Phone] = loginCount
+		phoneMap.Store(loginCount, User.Phone)
+		countMap.Store(User.Phone, loginCount)
 		loginCount++
 		err = DB.Model(&User).Where("phone = ? and password = ?", User.Phone, User.Password).First(&User).Error
 		if err != nil {
@@ -56,12 +56,12 @@ func init() {
 			})
 			return
 		}
-		count, ok := countMap[user.Phone]
+		count, ok := countMap.Load(user.Phone)
 		if !ok {
 			return
 		}
-		delete(countMap, user.Phone)
-		delete(phoneMap, count)
+		countMap.Delete(user.Phone)
+		phoneMap.Delete(count)
 		context.SetCookie("login", "", -1, "/", "http://127.0.0.1:8080", true, false)
 	})
 

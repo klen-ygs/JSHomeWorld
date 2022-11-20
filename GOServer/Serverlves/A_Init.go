@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"reflect"
 	"strconv"
+	"sync"
 )
 import _ "github.com/go-sql-driver/mysql"
 import "github.com/jinzhu/gorm"
@@ -12,18 +13,19 @@ var Engine *gin.Engine
 var DB *gorm.DB
 
 const (
-	PHONEERR    = "PhoneErr"
-	PASSWORDERR = "PasswordErr"
-	NONE        = ""
-	MODLEERR    = "ModelErr"
-	NOTFIND     = "NotFind"
-	INSERTERR   = "InsertErr"
+	PHONEERR     = "PhoneErr"
+	PASSWORDERR  = "PasswordErr"
+	NONE         = ""
+	MODLEERR     = "ModelErr"
+	NOTFIND      = "NotFind"
+	INSERTERR    = "InsertErr"
+	VIDEOPATHERR = "VideoPathErr"
 )
 
 var (
-	phoneMap          = make(map[uint64]string)
+	phoneMap   sync.Map
 	loginCount uint64 = 1
-	countMap          = make(map[string]uint64)
+	countMap   sync.Map
 )
 
 // response 处理回复消息
@@ -54,7 +56,8 @@ func getPhone(ctx *gin.Context, value interface{}) {
 		return
 	}
 	parseUint, _ := strconv.ParseUint(cookie, 10, 64)
-	phone.SetString(phoneMap[parseUint])
+	load, _ := phoneMap.Load(parseUint)
+	phone.SetString(load.(string))
 }
 
 func init() {

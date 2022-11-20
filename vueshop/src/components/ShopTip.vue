@@ -26,7 +26,6 @@ export default {
         axios.get("http://127.0.0.1:8000/getImage",
         {
             params:{
-
                 ShopId: this.ShopId,
                 Flag: false,
             },
@@ -43,8 +42,8 @@ export default {
         ).then(res => {
             this.ShopTitleText = res.data.ShopTitleText
             this.Price = res.data.Price
+            this.$store.commit("addPrice", this.Price)
         })
-
     },
     methods: {
         deleteTip() {
@@ -85,6 +84,7 @@ export default {
                 })
                 
             } )
+            this.$store.commit("subPrice", this.Price)
 
         },
         MouseIn() {
@@ -108,7 +108,6 @@ export default {
             }
         },
         JumptoShop() {
-
             let url = this.$router.resolve({path:`/Shop`,query:{ShopId: String(this.ShopId)}})
             window.open(url.href,"_blank")
         }

@@ -11,8 +11,8 @@
         :getPhone="getPhone" />
       </div>
       <div id="pageDiv">
-        <button class="pageButton" @click="toLast()">上一页</button>
-        <button class="pageButton" @click="toNext()">下一页</button>
+        <button ref="toLastPage" class="pageButton" @click="toLast()">上一页</button>
+        <button ref="toNextPage" class="pageButton" @click="toNext()">下一页</button>
       </div>
   </div>
 </template>
@@ -30,13 +30,17 @@ export default {
         },
         toLast() {
             this.Page--
+            if (this.Page == 1) {
+                this.$refs.toLastPage.disabled = "disabled"
+            }
+            this.$refs.toNextPage.disabled = ""
             axios.get("http://127.0.0.1:8000/getShop",
             {
                 params :{
                     MaxId: this.MaxId,
                     MinId: this.MinId,
                     Page:this.Page,
-                    FindMothod: "Last"
+                    FindMethod: "Last"
                     
                 },
             }
@@ -44,6 +48,7 @@ export default {
                 if (this.noData(res.data)) {
                     return
                 }
+                console.log(res.data)
                 this.shops = res.data
                 this.MinId = res.data[0].Id
                 this.MaxId = res.data[res.data.length - 1].Id
@@ -52,24 +57,26 @@ export default {
         },
         toNext() {
             this.Page++
+            this.$refs.toLastPage.disabled = ""
             axios.get("http://127.0.0.1:8000/getShop",
             {
                 params :{
                     MaxId: this.MaxId,
                     MinId: this.MinId,
                     page:this.Page,
-                    FindMothod: "Next",
+                    FindMethod: "Next",
                 },
             }
             ).then(res => {
                 if (this.noData(res.data)) {
+                    this.shops = null
+                    this.$refs.toNextPage.disabled = "disabled"
                     return
                 }
                 this.shops = res.data
                 this.MinId = res.data[0].Id
                 this.MaxId = res.data[res.data.length - 1].Id
             })
-
         },
         getPhone() {
             return this.Phone
@@ -92,11 +99,10 @@ export default {
                         MaxId: this.MaxId,
                         MinId: this.MinId,
                         Page:this.Page,
-                        FindMothod: "Next",
+                        FindMethod: "Next",
                     }
                 }
             ).then(res => {
-                console.log(res.data)
                 if (this.noData(res.data)) {
                     return
                 }
@@ -104,6 +110,7 @@ export default {
                 this.MinId = res.data[0].Id
                 this.MaxId = res.data[res.data.length - 1].Id
             })
+            this.$refs.toLastPage.disabled= "disabled"
     },
     data() {
         return {

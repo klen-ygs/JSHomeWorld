@@ -25,7 +25,7 @@
             <div id="registerButtonDiv">
                 <input type="radio"><label>同意<a href="#">《用户使用》</a>协议</label><br/>
                 <br/>
-                <button class="firstPageButton" @click="register()">注册</button>
+                <button class="firstPageButton" id="RegisterButon" @click="register()">注册</button>
             </div></div>
         </div>
         <div class="inputs" id="loginInputs">
@@ -42,12 +42,12 @@
                         </tr>
                     </table>
                 </form>
-                <button id="loginButton" @click="login()">登录</button>
+                <button ref="loginButton" id="loginButton" @click="login()" @mouseenter="LoginMouseEnter()" @mouseleave="LoginMouseLeave()">登录</button>
             </div>
         </div>
         <div ref="cover" id="cover">
-            <button v-show="logining" @click="toRegister()">register</button>
-            <button v-show="registing" @click="toLogin()">login</button>
+            <button id="toRegister" v-show="logining" @click="toRegister()">注册账号</button>
+            <button id="toLogin" v-show="registing" @click="toLogin()">登录</button>
         </div>
     </div>
 
@@ -224,15 +224,30 @@ export default {
                 return false
             }
         },
+        LoginMouseEnter() {
+            this.$refs.loginButton.style["background-color"] = "rgb(42, 120, 194)"
+
+        },
+        LoginMouseLeave() {
+            this.$refs.loginButton.style["background-color"] = "rgb(14, 86, 159)"
+        }
     }
 }
 </script>
 
+
 <style>
+
+d{
+    color: rgb(42, 120, 194);
+}
+
 .loginBack {
     width: 100%;
     height: 800px;
-    /*background-image: url(../assets/leaf.jpeg);*/
+    background-image: url(../../public/static/loginBack.jpg);
+    background-repeat: no-repeat;
+    background-position-x: center;
 }
 
 #inputPage {
@@ -241,8 +256,9 @@ export default {
     height: 450px;
     top: 150px;
     left: 350px;
-    background-color: rgb(245, 239, 239);
-    border-radius: 10px;
+    background-color: rgb(250, 250, 250);
+    border-radius: 5px;
+    box-shadow: 0 1px 4px gray;
 }
 
 #loginInputs {
@@ -322,12 +338,72 @@ export default {
     border: 1px groove rgb(191, 220, 226);
 }
 
-#loginButton {
+#loginButton, #RegisterButon {
+    cursor: pointer;
+    margin-left: 75px;
+    margin-top: 30px;
     width: 150px;
-    height: 50px;
-    background-color: rgb(164, 201, 233);
-    border-radius: 15px;
+    height: 40px;
+    background-color: rgb(14, 86, 159);
+    border-radius: 5px;
     border: 1px groove rgb(178, 236, 238);
+    color: rgb(242, 238, 238);
+    font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+}
+
+#RegisterButon {
+    margin-top: 20px;
+    margin-left: 50px;
+}
+
+#toRegister {
+    cursor: pointer;
+    position: relative;
+    top: 410px;
+    left: 30px;
+    font-size: 15px;
+    color: rgb(56, 100, 167);
+    background-color: rgba(0, 0, 0, 0);
+    border: 0 inset gray;
+    outline: none;
+}
+
+#toRegister:hover {
+    cursor: pointer;
+    position: relative;
+    top: 410px;
+    left: 30px;
+    font-size: 15px;
+    text-decoration: underline;
+    color: rgb(56, 100, 167);
+    background-color: rgba(0, 0, 0, 0);
+    border: 0 inset gray;
+    outline: none;
+}
+
+#toLogin {
+    cursor: pointer;
+    position: relative;
+    top: 410px;
+    left: 310px;
+    font-size: 15px;
+    color: rgb(56, 100, 167);
+    background-color: rgba(0, 0, 0, 0);
+    border: 0 inset gray;
+    outline: none;
+}
+
+#toLogin:hover {
+    cursor: pointer;
+    position: relative;
+    top: 410px;
+    left: 310px;
+    font-size: 15px;
+    text-decoration: underline;
+    color: rgb(56, 100, 167);
+    background-color: rgba(0, 0, 0, 0);
+    border: 0 inset gray;
+    outline: none;
 }
 
 </style>
