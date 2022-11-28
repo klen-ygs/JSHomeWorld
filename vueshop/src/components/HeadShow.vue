@@ -1,6 +1,8 @@
 <template>
   <div id="HeadBack">
-     
+      <div ref="" class="headTip" @click="toFirstPage()">
+          首页
+      </div>
       <div id="ShopCar" ref="ShopCar" @click="toList()" @mouseenter="enterLists()" @mouseleave="leaveLists()">
       </div>
       <div id="UserDiv">
@@ -105,6 +107,11 @@ export default {
                     }, 5)
                 }
             },500 )
+        },
+        toFirstPage() {
+            this.$router.push({
+                path:"/select"
+            })
         }
     },
     components: {
@@ -164,9 +171,9 @@ export default {
     width: 55px;
     height: 25px;
     border-radius: 15px;
-    background-color: rgb(243, 148, 148);
+    background-color: rgb(240, 107, 107);
     border: 0px;
-    box-shadow: 0 0 1 grey;
+    box-shadow: 0 0 2px rgb(239, 56, 56);
 }
 
 #logoutButton:hover {
@@ -176,10 +183,31 @@ export default {
     width: 55px;
     height: 25px;
     border-radius: 15px;
-    background-color: rgb(216, 139, 139);
+    background-color: rgb(240, 107, 107);
     border: 0px;
-    box-shadow: 0 0 1 grey;
+    box-shadow: 0 0 2px rgb(239, 56, 56);
 }
 
+.headTip {
+    height: 76%;
+    width: 80px;
+    padding-top: 17px;
+    text-align: center;
+    float:left;
+    font-size: 20px; 
+    margin-left: 20px; 
+    cursor: pointer;
+}
 
+.headTip:hover {
+    float:left;
+    width: 80px;
+    height: 76%;
+    padding-top: 17px;
+    text-align: center;
+    font-size: 20px; 
+    margin-left: 20px; 
+    background-color: aliceblue;
+    background-image: linear-gradient(rgb(136, 198, 243),rgb(165, 216, 233));
+}
 </style>

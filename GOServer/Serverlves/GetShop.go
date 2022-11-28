@@ -42,6 +42,7 @@ func init() {
 			context.JSON(http.StatusOK, &shop)
 			return
 		}
+		searchText <- request.SearchWord // 送给热点逻辑处理
 		var ShopArr []DaoModle.Shop
 		request.SearchWord = "%" + request.SearchWord + "%"
 		fmt.Println(request.FindMethod)

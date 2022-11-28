@@ -104,7 +104,7 @@ export default {
 
 #ListDiv {
   margin-top: 0px;
-  height: 1000px;
+  min-height: 800px;
   width: 90%;
   margin-left: 5%;
   background-color: rgb(245, 249, 253);

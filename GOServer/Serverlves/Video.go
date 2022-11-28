@@ -2,6 +2,7 @@ package Serverlves
 
 import (
 	"GOServer/DaoModle"
+	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -39,6 +40,9 @@ func pathSafe(path string) bool {
 var tmpMap = sync.Map{}
 
 func readVideo(remote, path string, seek int64) (*tmpVideoData, error) {
+	if !pathSafe(path) {
+		return nil, errors.New("路径错误")
+	}
 	open, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -66,7 +70,7 @@ func readVideo(remote, path string, seek int64) (*tmpVideoData, error) {
 		if err1 != nil {
 			return nil, err1
 		}
-		tmpMap.Store(path, &tmpData)
+		tmpMap.Store(remote+path, &tmpData)
 	} else {
 		tmpData.tmpSize = tmpData.Size - seek
 		tmpData.data = make([]byte, tmpData.tmpSize)
@@ -106,7 +110,7 @@ func getVideo(context *gin.Context) {
 	RangeIdx := strings.Split(RangeNum, "-")[0]
 	seek, _ := strconv.ParseInt(RangeIdx, 10, 64)
 	var fileData *tmpVideoData
-	value, ok := tmpMap.Load(path)
+	value, ok := tmpMap.Load(context.Request.RemoteAddr + path)
 	if ok {
 		fileData = value.(*tmpVideoData)
 		if seek+(1<<20) > fileData.seek+fileData.tmpSize || seek < fileData.seek {

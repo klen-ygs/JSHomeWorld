@@ -12,6 +12,8 @@ import "github.com/jinzhu/gorm"
 var Engine *gin.Engine
 var DB *gorm.DB
 
+const AJAXOrigin = "http://localhost:8080"
+
 const (
 	PHONEERR     = "PhoneErr"
 	PASSWORDERR  = "PasswordErr"
