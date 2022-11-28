@@ -3,31 +3,53 @@
         <HeadShow></HeadShow>
         <div id="box"></div>
         <div id="ShopBack">
-            <div style="height: 40px"></div>
-            <span style="font-size: 35px;margin-left: 100px;color: rgb(225, 96, 73);">{{TitleText}}</span>
             <div id="ShopImagesDiv" ref="ShopImage" > 
-                <video v-show="showVideo" ref="shopVideo" id="shopVideo" controls="controls" preload=" auto" width="870px">
+                <video v-show="showVideo" ref="shopVideo" id="shopVideo" controls="controls" preload=" auto" width="85%">
                 </video>
                 <button ref="ToLast" id="toLastImageButton" @click="toLastImage()"><img  id="leftForward" src="../assets/forward.png" width="15px"></button>
                 <button ref="ToNext" id="toNextImageButton" @click="toNextImage()"><img src="../assets/forward.png" width="15px"></button>
             </div>
-            <div id="infoDiv">
-                <div id="shopTextDiv">
-                {{Text}}
+            <div id="shopInfo">
+                <div style="margin-top: 10px; margin-left:40px; font-size: 20px; color: black; height: 50px; width: 85%; background-color: rgb(184, 184, 184);">
+                    {{TitleText}}
+                </div>
+                <div style="margin-top:15px; margin-left:50px; font-size: 25px; color: brown;">
+                    ￥{{Price}}
+                </div>
+                <div id="moreInfo" ref="moreInfo" @mouseenter="mouseEnterMoreInfo()" @mouseleave="mouseLeaveMoreInfo()">
+                    详情
+                    <div v-show="moreInfoShow" style="width:500px; height: 250px; position: absolute; background-color: rgb(248, 248, 248); top: 300px; box-shadow: 0 0 4px gray;border-radius: 5px;">
+                        {{Text}}
+                    </div>
+                </div>
+                <div style="margin-top: 20px; min-height: 30px;">
+                    <span style=" color:gray; margin-left: 30px; font-size: 14px;">发货：</span>
+                    {{Addr}}
+                </div>
+                <div id="chooseList">
+                    <span style="margin-left: 30px; color: gray; font-size: 15px;">
+                        {{chooseTip}}:
+                        <button class="TipButtons" ref="chooseTips" v-for="(name, index) in chooseTipList" :key="name" @click="chooseATip(name, index)">
+                            {{name}}
+                        </button>
+                    </span>
+                </div>
+                <div style="height:50px; margin-top: 30px; width: 100%; float: left;"> 
+                    <span style="margin-left:25px; font-size:15px;color: gray;">数量:</span>
+                    <button id="shopSubButton" ref="shopSubButton" @click="subPayNum()">-</button>
+                    <input type="text" v-model.number="PayNum" style="width: 60px; height: 26px; margin-left: 5px; margin-right: 5px; outline: none;background-color: rgb(242, 242, 242); border: 1px solid gray; text-align: center; border-radius: 3px; font-size: 15px;">
+                    <button id="shopAddButton" ref="shopAddButton" @click="addPayNum()" >+</button>
+                </div>
+                <div >
+                    <span style="color:gray; margin-left: 25px; font-size: 14px">库存：</span>
+                    <span style="margin-left: 20px;">{{Having + "件"}}</span>
+                </div>
+                <div style="width: 80%; height: 80px; margin-top: 20px;">
+                    <button id="payNowButton" @click="PayNow()">立即购买</button>
+                    <button id="addListButton" @click="addToList()">加入购物车</button>
+                </div>
             </div>
-            <div id="ShopPriceDiv">
-                <label>价格:</label>
-                <label style="font-size: 20px;color: rgb(233, 80, 25); margin-left: 50px;">￥{{Price}}</label>
-            </div>
-            <div id="HavingSpan">
-                <label>库存:</label>
-                <label>{{Having}}</label>
-            </div>
-            <div style="margin-top: 30px" >
-                <button id="payNowButton" @click="PayNow()">立即购买</button>
-                <button id="addListButton" @click="addToList()">加入购物车</button>
-            </div>
-            </div>
+           
         </div>
         <pay-widget ref="paywidget" v-show="showPay" :closeEvet="closePay"></pay-widget>
   </div>
@@ -101,6 +123,15 @@ export default {
                         } )
                     }
                 })
+                this.$refs.shopSubButton.disabled = "disabled"
+                axios.get("http://127.0.0.1:8000/shopChoose",{
+                    params: {
+                        ShopId: this.ShopId,
+                    }
+                }).then( res => {
+                    this.chooseTip = res.data.ChooseTip
+                    this.chooseTipList = JSON.parse(res.data.ChooseTipList)
+                } )
     },
     methods:{
         toNextImage() {
@@ -167,13 +198,56 @@ export default {
 
 
         },
+        mouseEnterMoreInfo() {
+            this.$refs.moreInfo.style["color"] = "rgb(238, 91, 91)"
+            this.$refs.moreInfo.style["border"] = "1px solid rgb(238, 91, 91)"
+            this.$refs.moreInfo.style["background-color"] = "rgb(245, 245, 245)"
+            this.moreInfoShow = true
+
+        },
+        mouseLeaveMoreInfo() {
+            this.$refs.moreInfo.style["color"] = ""
+            this.$refs.moreInfo.style["border"] = ""
+            this.$refs.moreInfo.style["background-color"] = ""
+            this.moreInfoShow = false
+
+        },
         PayNow() {
             this.showPay = true
             this.$refs.paywidget.showThisPay()
         },
         closePay() {
             this.showPay = false
-        }
+        },
+        subPayNum() {
+            this.PayNum--
+            this.$refs.shopSubButton.disabled = ""
+            if (this.PayNum == 0) {
+                this.$refs.shopSubButton.disabled = "disabled"
+            }
+        },
+        addPayNum() {
+            this.PayNum++
+            this.$refs.shopSubButton.disabled = ""
+            if (this.PayNum >= this.Having) {
+                this.$refs.shopAddButton.disabled = "disabled"
+            }
+        },
+        chooseATip(name, index) {
+            this.choise = name
+            console.log(name)
+            for (let a = 0; a < this.$refs.chooseTips.length; a++) {
+                if (a != index) {
+                    this.$refs.chooseTips[a].style["border"] = ""
+                    this.$refs.chooseTips[a].style["color"] = ""
+                    this.$refs.chooseTips[a].style["background-color"] = ""
+                } else {
+                    this.$refs.chooseTips[a].style["border"] = "1px solid orange"
+                    this.$refs.chooseTips[a].style["color"] = "orange"
+                    this.$refs.chooseTips[a].style["background-color"] = "rgb(240, 236, 229)"
+                }
+            }
+        },
     },
     data() {
         return{
@@ -187,13 +261,23 @@ export default {
             Price: 0,
             Having: 0,
             TitleText: "",
-            showPay: false
+            showPay: false,
+            Addr:"衡阳事",
+            PayNum: 0,
+            chooseTip:"66",
+            chooseTipList: ["white","black","666"],
+            choise:"",
+            moreInfoShow: false,
         }
     },
 }
 </script>
 
 <style>
+
+d{
+    background-color: rgb(248, 248, 248)
+}
 
 #ShopBack {
     width: 90%;
@@ -206,34 +290,41 @@ export default {
 
 #addListButton {
     width: 100px;
-    height: 30px;
+    height: 45px;
     cursor: pointer;
     background-color: rgb(54, 144, 209);
-    border-radius: 15px;
+    background-image: linear-gradient(to right, rgb(37, 106, 244), rgb(67, 170, 243));
+    box-shadow: 2px 0 4px rgb(37, 106, 244);
+    border-radius: 25px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
     border: 0px;
-    margin-left: 30%;
 }
 
 #addListButton:hover {
     width: 100px;
-    height: 30px;
+    height: 45px;
     cursor: pointer;
     background-color: rgb(69, 163, 217);
-    border-radius: 15px;
+    background-image: linear-gradient(to right, rgb(15, 91, 242), rgb(25, 153, 244));
+    box-shadow: 2px 0 4px rgb(37, 106, 244);
+    border-radius: 25px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
     border: 0px;
-    margin-left: 30%;
 }
 
 
 #ShopImagesDiv {
+    display: inline-block;
     position: relative;
     top: 10px;
-    margin-left: 13%;
+    margin-left: 2%;
     margin-top: 2%;
-    width: 70%;
+    width: 45%;
     height: 500px;
     border-radius: 10px;
-    background-color: rgb(224, 237, 236);
+    background-color: rgb(238, 238, 238);
     background-repeat: no-repeat;
     background-position-x: center;
     background-position-y: center;
@@ -243,14 +334,14 @@ export default {
     position: absolute;
    height: 50px;
    width: 30px;
-   margin-top: 22%;
+   margin-top: 35%;
    margin-left: 5px;
 }
 
 #toNextImageButton {
     position: absolute;
    right: 5px;
-   margin-top: 22%;
+   margin-top: 35%;
    background-repeat: no-repeat;
    height: 50px;
    width: 30px;
@@ -271,8 +362,8 @@ export default {
 
 #shopVideo {
     position: absolute;
-    margin-left: 4%;
-    margin-top: 5px;
+    margin-left: 8%;
+    margin-top: 15%;
     border: 0 0 0 black;
 }
 
@@ -311,22 +402,114 @@ export default {
 
 #payNowButton {
     width: 100px;
-    height: 30px;
+    height: 45px;
     cursor: pointer;
-    background-color: rgb(225, 126, 109);
-    border-radius: 15px;
+    background-image: linear-gradient(to right ,rgb(243, 128, 75), rgb(240, 44, 44));
+    box-shadow: 0 0 8px rgb(239, 121, 89);
+    border-radius: 25px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
     border: 0px;
     margin-left: 20%;
 }
 
 #payNowButton:hover {
     width: 100px;
-    height: 30px;
+    height: 45px;
     cursor: pointer;
-    background-color: rgb(217, 92, 69);
-    border-radius: 15px;
+    background-image: linear-gradient(to right ,rgb(245, 108, 44), red);
+    border-radius: 25px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
     border: 0px;
     margin-left: 20%;
+}
+
+#shopInfo {
+    float: right;
+    margin-right: 5%;
+    margin-left: 3%;
+    margin-top: 3%;
+    width: 45%;
+    height: 500px;
+    background-color: rgb(251, 251, 251);
+}
+
+#moreInfo {
+    cursor: pointer;
+    margin-left: 8%;
+    margin-top: 20px;
+    width: 80px;
+    height: 30px;
+    border-radius: 25px;
+    border: 1px solid gray;
+    text-align: center;
+    padding-top: 5px;
+}
+
+#chooseList {
+    width: 100%;
+    height: 150px;
+    padding-top: 10px;
+}
+
+#shopSubButton {
+    cursor: pointer;
+    margin-left: 20px;
+    width:30px; height:30px; 
+    border-top-left-radius: 15px; 
+    border-bottom-left-radius: 15px;
+    background-color: rgb(242, 242, 242);
+    border: 1px solid gray;
+}
+
+#shopSubButton:hover {
+    margin-left: 20px;
+    width:30px; height:30px; 
+    border-top-left-radius: 15px; 
+    border-bottom-left-radius: 15px;
+    background-color: rgb(232, 232, 232);
+    border: 1px solid gray;
+}
+
+#shopAddButton {
+    cursor: pointer;
+    width:30px; height:30px; 
+    border-top-right-radius: 15px; 
+    border-bottom-right-radius: 15px;
+    background-color: rgb(242, 242, 242);
+    border: 1px solid gray;
+}
+
+#shopAddButton:hover {
+    cursor: pointer;
+    width:30px; height:30px; 
+    border-top-right-radius: 15px; 
+    border-bottom-right-radius: 15px;
+    background-color: rgb(232, 232, 232);
+    border: 1px solid gray;
+}
+
+.TipButtons {
+    cursor: pointer;
+    height: 40px;
+    border-radius: 10px;
+    min-width: 40px;
+    background-color: rgb(236, 236, 236);
+    border: 1px solid rgb(236, 236, 236);
+    margin-left: 8px;
+    margin-right: 8px;
+}
+
+.TipButtons:hover {
+    cursor: pointer;
+    height: 40px;
+    border-radius: 10px;
+    min-width: 40px;
+    background-color: rgb(221, 218, 218);
+    border: 1px solid rgb(221, 218, 218);
+    margin-left: 8px;
+    margin-right: 8px;
 }
 
 </style>

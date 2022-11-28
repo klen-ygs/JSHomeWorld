@@ -4,6 +4,7 @@ import vueRouter from 'vue-router'
 import AddShopPage from '../pages/AddShopPage'
 import ShopListPage from '../pages/ShopListPage'
 import ShopPage from '../pages/ShopPage'
+import SelectedPage from '../pages/SelectedPage'
 
 export default new vueRouter({
     mode: "history",
@@ -29,6 +30,10 @@ export default new vueRouter({
         {
             path:"/Shop",
             component: ShopPage,
+        },
+        {
+            path:"/selected",
+            component: SelectedPage,
         }
     ],
 })

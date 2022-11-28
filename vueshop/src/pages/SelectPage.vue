@@ -4,7 +4,23 @@
       <div id="box">
 
       </div>
-      <SelectInput :select="select" ></SelectInput>
+      <SelectInput ref="selectInput" :select="select" ></SelectInput>
+      <div v-show="!onSearch" id="recommend">
+        <div id="sortList">
+            <div ref="recommedList" class="recommedList" v-for="(name, index) in sortList" :key="index" @mouseenter="enterRecommed(index, name)">
+                {{name}}
+            </div>
+        </div>
+        <div id="recommendImg" ref="recommendImg">
+
+        </div>
+      </div>
+      <div v-show="!onSearch" id="hotPoint">
+        <div style=" width=100%; height: 40px; text-align: center; font-size: 20px; color:rgb(229, 91, 88); border-bottom: 2px groove black; padding-top: 10px;">热搜榜</div>
+        <div v-for="(select, index) in hotSelect" :key="select" class="hotSelect"  @click="searchFromHotPoint(select.SearchText)">
+            <span style="color: orange">{{index + 1}}</span> {{"  " +select.SearchText}}
+        </div>
+    </div>
       <div id="shopDiv">
         <ShopWindown v-for="shop in shops" :key="shop.Id" :Id="shop.Id" 
         :Price="shop.Price" :ShopTitleText="shop.ShopTitleText" :Name="shop.Name"
@@ -88,11 +104,29 @@ export default {
                 return true                
             }
             return false
+        },
+        enterRecommed(index, name) {
+            this.$refs.recommedList[this.chooseRecommed].style["background-color"] = ""
+            this.chooseRecommed = index
+            this.$refs.recommedList[index].style["background-color"] = "rgb(238, 80, 48)"
+            this.$refs.recommendImg.src = name + ".png"
+        },
+        getHotSelect() {
+            axios({
+                method:"Get",
+                url:"http://127.0.0.1:8000/hotSearch",
+            }).then( res => {
+                this.hotSelect = res.data
+            } )
+
+        },
+       searchFromHotPoint(name) {
+            this.$refs.selectInput.setSearchWord(name)
+            this.$refs.selectInput.search()
         }
     },
     mounted() {
             this.Phone = this.$route.params.Phone
-            console.log(this.Phone)
             axios.get("http://127.0.0.1:8000/getShop",
                 {
                     params: {
@@ -111,6 +145,15 @@ export default {
                 this.MaxId = res.data[res.data.length - 1].Id
             })
             this.$refs.toLastPage.disabled= "disabled"
+            this.getHotSelect()
+            let _this = this
+            setTimeout(function getHot() {
+                _this.getHotSelect()
+                setTimeout(getHot, 10000)
+            }, 10000)
+            this.$refs.selectInput.addSearchListener(()=> {
+                this.onSearch = true
+            })
     },
     data() {
         return {
@@ -119,7 +162,11 @@ export default {
             MaxId: 0,
             findMothod: "",
             Page: 1,
-            Phone:""
+            Phone:"",
+            sortList: ["衣服","电器","玩具","日用品","婴儿","零食","厨具"],
+            hotSelect: [ {SearchText:"当前无热搜"},{SearchText:"显卡"}],
+            chooseRecommed: 0,
+            onSearch: false,
         }
     },
     components:{
@@ -131,6 +178,10 @@ export default {
 </script>
 
 <style>
+
+d{
+    color: rgb(229, 91, 88);
+}
 
 #shopDiv {
     margin-top: 20px;
@@ -157,6 +208,90 @@ export default {
 
 #box {
     height: 80px;
+}
+
+#recommend {
+    display: inline-block;
+    margin-top: 30px;
+    margin-left: 10%;
+    width: 60%;
+    height: 500px;
+    background-color: rgb(158, 158, 158);
+    border-radius: 2px;
+}
+
+#sortList {
+    float: left;
+    width: 15%;
+    height: 100%;
+    background-color: rgb(55, 55, 55);
+}
+
+#recommendImg {
+    display: inline-block;
+    width: 85%;
+    height: 100%;
+    background-color: rgb(217, 217, 217);
+}
+
+#hotPoint {
+    float: right;
+    margin-right: 10%;
+    margin-top: 30px;
+    width: 15%;
+    height: 500px;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0 1px 2px gray;
+    border-radius: 4px;
+}
+
+.recommedList {
+    margin: 0 0 0 0;
+    display: inline-block;
+    width: 100%;
+    height: 8%;
+    font-size: 16px;
+    text-align: center;
+    padding-top: 20px;
+    color: white;
+}
+
+.recommedList:hover {
+    margin: 0 0 0 0;
+    display: inline-block;
+    width: 100%;
+    height: 8%;
+    font-size: 16px;
+    text-align: center;
+    color: white;
+    padding-top: 20px;
+    background-color: rgb(238, 80, 48);
+}
+
+.hotSelect {
+    cursor: pointer;
+    max-lines: 1;
+    word-break:keep-all;
+	white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    padding-left: 20px;
+    text-align: left;
+    height: 25px;
+    padding-top: 10px;
+    font-size: 15px;
+    color: blue;
+}
+
+.hotSelect:hover {
+    padding-left: 20px;
+    text-align: left;
+    height: 25px;
+    max-lines: 1;
+    text-decoration: underline;
+    padding-top: 10px;
+    font-size: 15px;
+    color: rgb(83, 83, 249);
 }
 
 </style>
