@@ -20,12 +20,6 @@ export default {
     methods:{
         search() {
             this.page = 1
-            this.$router.push({
-                path:"/selected",
-                query: {
-                    search: this.SearchWord
-                }
-            })
             axios.get("http://127.0.0.1:8000/getShop",
             {
                 params: {
@@ -43,7 +37,6 @@ export default {
             this.searchListeners.push(listener)
         },
         setSearchWord(name) {
-            console.log(name)
             this.SearchWord = name
         }
     },

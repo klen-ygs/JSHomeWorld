@@ -54,6 +54,5 @@ func init() {
 			Err:     NONE,
 		})
 	})
-
 	accessOrigin("/shopChoose")
 }

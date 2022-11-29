@@ -89,6 +89,7 @@ export default {
             if (res.data.Request == false) {
                 this.showVideo = false
                 this.hasVideo = false
+                console.log("666")
                 return
             }
             this.showVideo = true
@@ -104,24 +105,13 @@ export default {
                     }
                 ).then(res => {
                     this.imageCount = res.data.count
-                    if (this.imageCount > 0) {
-                        axios({
-                            url:"http://127.0.0.1:8000/getImages",
-                            method:"Get",
-                            params: {
-                                ShopId: this.ShopId,
-                                Id: 1,
-                            },
-                            responseType:"blob"
-                        }).then( res=> {
-                            this.imageUrls.push(URL.createObjectURL(new Blob([res.data],{type:"image/*"})))
-                            this.$refs.ShopImage.style["background-image"] = `url(${this.imageUrls[0]})`
-                            if (this.imageCount > 1) {
-                                this.$refs.ToNext.disabled = ""
-                            }
-                            this.$refs.ToLast.disabled = "disabled"
-                        } )
+                    if (this.imageCount > 1) {
+                        this.$refs.ToNext.disabled = ""
                     }
+                    this.$refs.ToLast.disabled = "disabled"
+                    // if (this.hasVideo == false) {
+                    //     this.toNextImage()
+                    // }
                 })
                 this.$refs.shopSubButton.disabled = "disabled"
                 axios.get("http://127.0.0.1:8000/shopChoose",{
@@ -130,6 +120,9 @@ export default {
                     }
                 }).then( res => {
                     this.chooseTip = res.data.ChooseTip
+                    if (this.chooseTip == null) {
+                        return
+                    }
                     this.chooseTipList = JSON.parse(res.data.ChooseTipList)
                 } )
     },
@@ -152,7 +145,7 @@ export default {
                 method:"Get",
                 params: {
                     ShopId : this.ShopId,
-                    Id: this.imageIdx,
+                    Id: this.imageIdx ,
                 },
                 responseType:"blob",
             }).then( res=> {
@@ -184,7 +177,11 @@ export default {
             ).then( res => {
                 console.log(res.data)
                 let list = JSON.parse(res.data.List)
-                list.push(this.ShopId)
+                list.push({
+                    ShopId: this.ShopId,
+                    Choise: this.choise,
+                    PayNum: this.PayNum,
+                })
                 console.log(JSON.stringify(list))
                 axios({
                     method:"Post",

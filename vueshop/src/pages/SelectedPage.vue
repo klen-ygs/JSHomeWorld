@@ -111,13 +111,14 @@
       mounted() {
               this.Phone = this.$route.params.Phone
               this.SearchText = this.$route.query.search
+              this.$refs.selectInput.setSearchWord(this.SearchText)
               axios.get("http://127.0.0.1:8000/getShop",
                   {
                       params: {
                           MaxId: this.MaxId,
                           MinId: this.MinId,
-                          Page:this.Page,
-                          FindMethod: "Next",
+                          Page: 1,
+                          SearchWord: this.SearchText,
                       }
                   }
               ).then(res => {

@@ -11,6 +11,7 @@ export default new vueRouter({
     routes: [
         {
             path:"/",
+            name:"loginPage",
             component:LoginPage,
         },
         {

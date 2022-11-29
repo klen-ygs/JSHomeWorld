@@ -15,7 +15,7 @@
         </span>
       </div>
       <div id="ListDiv">
-        <ShopTip v-for="tip in shopLists" :key="tip" :Phone="Phone" :ShopId="Number(tip)"/>
+        <ShopTip v-for="(shop, index) in shopLists" :key="Number(shop.ShopId)" :Phone="Phone" :ShopId="Number(shop.ShopId)" :Index="index" :PayNum="Number(shop.PayNum)" :Choise="shop.Choise"  />
       </div>
       <div v-show="showMessage" ref="listMessage" id="listMessage">
         删除成功
@@ -44,6 +44,7 @@ export default {
       }
       ).then(res => {
             this.shopLists = JSON.parse(res.data.List)
+            console.log(this.shopLists)
           })
 
   },
