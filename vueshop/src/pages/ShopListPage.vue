@@ -15,7 +15,7 @@
         </span>
       </div>
       <div id="ListDiv">
-        <ShopTip v-for="(shop, index) in shopLists" :key="Number(shop.ShopId)" :Phone="Phone" :ShopId="Number(shop.ShopId)" :Index="index" :PayNum="Number(shop.PayNum)" :Choise="shop.Choise"  />
+        <ShopTip v-for="(shop, index) in shopLists" :key="Number(shop.ShopId)" :Phone="Phone" :ShopId="Number(shop.ShopId)" :Index="index" :PayNum="Number(shop.PayNum)" :Choise="shop.Choise" :DeleteListener="getList"  />
       </div>
       <div v-show="showMessage" ref="listMessage" id="listMessage">
         删除成功
@@ -35,18 +35,7 @@ export default {
   name:"ShopListPage",
   mounted() {
     this.Phone = this.$route.params.Phone
-    axios.get("http://127.0.0.1:8000/addTip",
-      {
-        params:{
-          Phone : this.Phone
-        },
-        withCredentials:true
-      }
-      ).then(res => {
-            this.shopLists = JSON.parse(res.data.List)
-            console.log(this.shopLists)
-          })
-
+    this.getList()
   },
   data() {
     return {
@@ -77,6 +66,18 @@ export default {
             },250)
           }
         },16.7)
+    },
+    getList() {
+      axios.get("http://127.0.0.1:8000/addTip",
+      {
+        params:{
+          Phone : this.Phone
+        },
+        withCredentials:true
+      }
+      ).then(res => {
+            this.shopLists = JSON.parse(res.data.List)
+          })
     },
     openPay() {
       this.showPay = true

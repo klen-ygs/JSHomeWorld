@@ -109,6 +109,7 @@
           }
       },
       mounted() {
+            document.title = "搜索"
               this.Phone = this.$route.params.Phone
               this.SearchText = this.$route.query.search
               this.$refs.selectInput.setSearchWord(this.SearchText)

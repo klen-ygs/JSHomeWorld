@@ -40,6 +40,25 @@
               <td><input type="file" @change="addVideo($event)"></td>
           </tr>
           <tr>
+              <td>发货地址</td>
+              <td><input type="text" v-model="addr"></td>
+          </tr>
+          <tr>
+              <td>选项名字</td>
+              <td><input type="text" v-model="ChooseText"></td>
+          </tr>
+          <tr>
+              <td>选项</td>
+              <td>
+                  <div v-for="_,index in chooses" :key="index">
+                    <input type="text" v-model="chooses[index]">
+                  </div>
+              </td>
+          </tr>
+          <tr>
+              <td><button @click="addChoose()">+</button></td>
+          </tr>
+          <tr>
               <img ref="Image" />
           </tr>
       </table>
@@ -63,7 +82,13 @@ export default {
             titleImageData: null,
             imagesData: null,
             videoData: null,
+            ChooseText: "",
+            chooses: [],
+            addr:""
         }
+    },
+    mounted() {
+        document.title = "增加商店"
     },
     methods: {
         get(){
@@ -86,7 +111,8 @@ export default {
                     shopTitleText: this.shopTitleText,
                     text: this.text,
                     having: this.having,
-                    price: this.price
+                    price: this.price,
+                    Address: this.addr
                 }
             }).then( res => {
                 let shopId = res.data.id
@@ -112,8 +138,14 @@ export default {
                  videoData.append("video", this.videoData)
                  videoData.append("ShopId", shopId)
                  axios.post("http://127.0.0.1:8000/video/addVideo", videoData)
+                 if (this.ChooseText != "") {
+                axios.post("http://127.0.0.1:8000/shopChoose", {
+                    ShopId: shopId,
+                    ChooseTip: this.ChooseText,
+                    ChooseTipList: JSON.stringify(this.chooses)
+                })
+            }
             } )
-
         },
         addImage(event) {
            this.titleImageData = event.target.files[0]
@@ -123,6 +155,9 @@ export default {
         },
         addVideo(event) {
             this.videoData = event.target.files[0]
+        },
+        addChoose() {
+            this.chooses.push("")
         }
     }
 }

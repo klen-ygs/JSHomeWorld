@@ -93,6 +93,7 @@ export default {
     margin-left: 5%;
     height: 50%;
     margin-bottom: 10%;
+    overflow: hidden;
 }
 
 #imageDiv {
@@ -100,6 +101,7 @@ export default {
     margin-left: 6%;
     height: 60%;
     margin-bottom: 2%;
+    overflow: hidden;
 }
 
 #price {

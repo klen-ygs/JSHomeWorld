@@ -130,6 +130,7 @@ export default {
         }
     },
     mounted() {
+        document.title = "首页"
             this.Phone = this.$route.params.Phone
             axios.get("http://127.0.0.1:8000/getShop",
                 {

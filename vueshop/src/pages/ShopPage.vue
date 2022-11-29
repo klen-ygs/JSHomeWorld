@@ -10,7 +10,7 @@
                 <button ref="ToNext" id="toNextImageButton" @click="toNextImage()"><img src="../assets/forward.png" width="15px"></button>
             </div>
             <div id="shopInfo">
-                <div style="margin-top: 10px; margin-left:40px; font-size: 20px; color: black; height: 50px; width: 85%; background-color: rgb(184, 184, 184);">
+                <div style="margin-top: 10px; margin-left:40px; font-size: 20px; color: black; height: 50px; width: 85%; background-color: rgb(184, 184, 184); padding: 10px 0px 0px 10px ;">
                     {{TitleText}}
                 </div>
                 <div style="margin-top:15px; margin-left:50px; font-size: 25px; color: brown;">
@@ -18,7 +18,7 @@
                 </div>
                 <div id="moreInfo" ref="moreInfo" @mouseenter="mouseEnterMoreInfo()" @mouseleave="mouseLeaveMoreInfo()">
                     详情
-                    <div v-show="moreInfoShow" style="width:500px; height: 250px; position: absolute; background-color: rgb(248, 248, 248); top: 300px; box-shadow: 0 0 4px gray;border-radius: 5px;">
+                    <div v-show="moreInfoShow" style="width:500px; height: 200px; position: absolute; background-color: rgb(248, 248, 248); top: 300px; box-shadow: 0 0 4px gray;border-radius: 5px;">
                         {{Text}}
                     </div>
                 </div>
@@ -44,9 +44,15 @@
                     <span style="color:gray; margin-left: 25px; font-size: 14px">库存：</span>
                     <span style="margin-left: 20px;">{{Having + "件"}}</span>
                 </div>
-                <div style="width: 80%; height: 80px; margin-top: 20px;">
+                <div style="width: 80%; height: 80px; margin-top: 20px; position: relative;">
                     <button id="payNowButton" @click="PayNow()">立即购买</button>
                     <button id="addListButton" @click="addToList()">加入购物车</button>
+                    <div v-show="addListACShow"  ref="AddListACTip" style="position: absolute; right: 190px; top: -28px;; height: 25px; width: 120px; border-radius: 5px; box-shadow: 0 0 4px gray; background-color: white; overflow: hidden;">
+                        <img src="../../public/static/点赞.png" width="20px">
+                        <span>
+                            收藏成功
+                        </span>
+                    </div>
                 </div>
             </div>
            
@@ -77,6 +83,7 @@ export default {
             this.Price = res.data.Price
             this.Having = res.data.Having
             this.TitleText = res.data.ShopTitleText
+            document.title = this.TitleText
         })
 
         axios.get("http://127.0.0.1:8000/video/findVideo",
@@ -109,9 +116,9 @@ export default {
                         this.$refs.ToNext.disabled = ""
                     }
                     this.$refs.ToLast.disabled = "disabled"
-                    // if (this.hasVideo == false) {
-                    //     this.toNextImage()
-                    // }
+                    if (this.hasVideo == false) {
+                        this.toNextImage()
+                    }
                 })
                 this.$refs.shopSubButton.disabled = "disabled"
                 axios.get("http://127.0.0.1:8000/shopChoose",{
@@ -120,9 +127,10 @@ export default {
                     }
                 }).then( res => {
                     this.chooseTip = res.data.ChooseTip
-                    if (this.chooseTip == null) {
+                    if (this.chooseTip == "") {
                         return
                     }
+                    this.ChooseTip = res.data.ChooseTip
                     this.chooseTipList = JSON.parse(res.data.ChooseTipList)
                 } )
     },
@@ -158,12 +166,16 @@ export default {
             if (this.imageCount > this.imageIdx) {
                 this.$refs.ToNext.disabled = ""
             }
-            if ((this.imageIdx == 1 && this.hasVideo == false) || (this.imageIdx == 0)) {
+            if (this.imageIdx == 0) {
                 this.$refs.ToLast.disabled = "disabled"
+                this.$refs.ShopImage.style["background-image"] = ""
                 if (this.hasVideo == true) {
                     this.showVideo = true
                 }
                 return
+            }
+            if (this.imageIdx == 1 && this.hasVideo == false) {
+                this.$refs.ToLast.disabled = "disabled"
             }
             this.$refs.ShopImage.style["background-image"] = `url(${this.imageUrls[this.imageIdx - 1]})`
         },
@@ -191,9 +203,15 @@ export default {
                     },
                     withCredentials:true,
                 })
-            } )
-
-
+            } ).then(()=> {
+                this.addListAC()
+            })
+        },
+        addListAC() {
+            this.addListACShow = true
+            setTimeout(()=> {
+                this.addListACShow = false
+            }, 800)
         },
         mouseEnterMoreInfo() {
             this.$refs.moreInfo.style["color"] = "rgb(238, 91, 91)"
@@ -251,7 +269,7 @@ export default {
             imageCount: 0,
             ShopId: 0,
             imageUrls:[],
-            imageIdx:1,
+            imageIdx:0,
             showVideo: false,
             hasVideo : false,
             Text: "",
@@ -265,6 +283,7 @@ export default {
             chooseTipList: ["white","black","666"],
             choise:"",
             moreInfoShow: false,
+            addListACShow: false 
         }
     },
 }
