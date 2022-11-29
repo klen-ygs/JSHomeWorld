@@ -8,4 +8,5 @@ type Shop struct {
 	Text          string
 	Having        uint64
 	Price         int16
+	Address       string
 }

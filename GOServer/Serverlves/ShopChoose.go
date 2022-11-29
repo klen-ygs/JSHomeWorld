@@ -33,7 +33,7 @@ func init() {
 	Engine.POST("/shopChoose", func(context *gin.Context) {
 		context.Writer.Header().Add("Access-Control-Allow-Origin", AJAXOrigin)
 		choose := DaoModle.ShopChoose{}
-		err := context.ShouldBindQuery(&choose)
+		err := context.BindJSON(&choose)
 		if err != nil {
 			context.JSON(http.StatusOK, response{
 				Request: false,

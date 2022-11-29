@@ -80,7 +80,7 @@ export default {
             ).then( res => {
                 let list = JSON.parse(res.data.List)
                 list.splice(this.Index, 1)
-                this.$parent.showMessageFunction()
+                //this.$parent.showMessageFunction() //废弃的提示方法
                 axios({
                     withCredentials:true,
                     method:"Post",
@@ -89,6 +89,8 @@ export default {
                         Phone: this.Phone,
                         List: JSON.stringify(list),
                     }
+                }).then(()=> {
+                    this.DeleteListener()
                 })
                 
             } )
@@ -167,6 +169,7 @@ export default {
         PayNum: Number,
         Choise: String,
         Index: Number,
+        DeleteListener: Function,
     }
 }
 </script>
