@@ -6,10 +6,16 @@
         <div id="ShopTitleTextDiv">
             {{ ShopTitleText }}
         </div>
+        <div style="display: inline-block; vertical-align: top; margin-top: 40px;">
+            <button id="shopSubButton" ref="shopSubButton" @click.stop="subPayNum()">-</button>
+            <span><input type="text" @click.stop="0" v-model.number="InputPayNum" style="width: 60px; height: 26px; margin-left: 5px; margin-right: 5px; outline: none;background-color: rgb(242, 242, 242); border: 1px solid gray; text-align: center; border-radius: 3px; font-size: 15px;"></span>
+            <button id="shopAddButton" ref="shopAddButton" @click.stop="addPayNum()">+</button>
+        </div>
         <div id="PriceDiv">
             ￥{{ Price }}
         </div>
         <button id="deleteButton" @click.stop="deleteTip()">删除</button>
+        <button v-show="changePayNum" id="submitChange" @click.stop="saveChange()">保存修改</button>
   </div>
 </template>
 
@@ -19,7 +25,11 @@ export default {
     data() {
         return{
             ShopTitleText:"",
-            Price:""
+            Price:"",
+            InputPayNum: 0,
+            Having: 0,
+            changePayNum: false,
+            totlePrice: 0,
         }
     },
     mounted() {
@@ -42,8 +52,21 @@ export default {
         ).then(res => {
             this.ShopTitleText = res.data.ShopTitleText
             this.Price = res.data.Price
-            this.$store.commit("addPrice", this.Price)
+            this.Having = res.data.Having
+            if (this.Having < this.PayNum) {
+                this.$refs.shopAddButton.disabled = "disabled"
+            }
+            this.totlePrice = this.InputPayNum * this.Price
+            this.$store.commit("addPrice", this.totlePrice)
+
         })
+        this.$refs.shopSubButton.disabled = "disabled"
+        if (!isNaN(this.PayNum)) {
+            this.InputPayNum = this.PayNum
+        }
+        if (this.InputPayNum > 0) {
+            this.$refs.shopSubButton.disabled = ""
+        }
     },
     methods: {
         deleteTip() {
@@ -56,13 +79,8 @@ export default {
             }
             ).then( res => {
                 let list = JSON.parse(res.data.List)
-                for (let a = 0; a < list.length; a++) {
-                    if (list[a] == this.ShopId) {
-                        list.splice(a, 1)
-                        this.$parent.showMessageFunction()
-                        break
-                    }
-                }
+                list.splice(this.Index, 1)
+                this.$parent.showMessageFunction()
                 axios({
                     withCredentials:true,
                     method:"Post",
@@ -71,20 +89,10 @@ export default {
                         Phone: this.Phone,
                         List: JSON.stringify(list),
                     }
-                }).then(() => {
-                    let list = this.$parent.shopLists
-                    for (let a = 0; a < list.length; a++) {
-                        if (list[a] == this.ShopId) {
-                            list.splice(a, 1)
-
-                            break
-                        }
-                    }
-
                 })
                 
             } )
-            this.$store.commit("subPrice", this.Price)
+            this.$store.commit("subPrice", this.InputPayNum * this.Price)
 
         },
         MouseIn() {
@@ -110,11 +118,55 @@ export default {
         JumptoShop() {
             let url = this.$router.resolve({path:`/Shop`,query:{ShopId: String(this.ShopId)}})
             window.open(url.href,"_blank")
+        },
+        addPayNum() {
+            this.changePayNum = true
+            this.$refs.shopSubButton.disabled = ""
+            this.InputPayNum++
+            this.totlePrice += this.Price
+            this.$store.commit("addPrice", this.Price)
+        },
+        subPayNum() {
+            this.changePayNum = true
+            this.InputPayNum--
+            if (this.InputPayNum == 0) {
+                this.$refs.shopSubButton.disabled = "disabled"
+            }
+            this.totlePrice -= this.Price
+            this.$store.commit("subPrice", this.Price)
+        },
+        saveChange() {
+            axios.get("http://127.0.0.1:8000/addTip",
+            {
+                data: {
+                    Phone :this.Phone,
+                },
+                withCredentials: true
+            }
+            ).then( res => {
+                let list = JSON.parse(res.data.List)
+                list[this.Index].PayNum = this.InputPayNum
+                axios({
+                    withCredentials:true,
+                    method:"Post",
+                    url:"http://127.0.0.1:8000/addTip",
+                    data: {
+                        Phone: this.Phone,
+                        List: JSON.stringify(list),
+                    }
+                }).then(() => {
+                    this.changePayNum = false
+                })
+                
+            } )
         }
     },
     props: {
         ShopId:Number,
         Phone: String,
+        PayNum: Number,
+        Choise: String,
+        Index: Number,
     }
 }
 </script>
@@ -167,7 +219,7 @@ export default {
     border-radius: 20px;
     margin-bottom: 60px;
     background-color: rgb(196, 227, 246);
-    box-shadow: 0px 0px 1px;
+    box-shadow: 0px 0px 2px rgb(196, 227, 246);
     border: 0px ;
 }
 
@@ -176,13 +228,36 @@ export default {
     margin-left: 50px;
     width: 100px;
     height: 30px;
+    vertical-align: middle;
+    border-radius: 20px;
+    margin-bottom: 60px;
+    background-color: rgb(126, 183, 218);
+    box-shadow: 0px 0px 4px rgb(126, 183, 218);
+}
+
+#submitChange {
+    cursor: pointer;
+    margin-left: 30px;
     width: 100px;
     height: 30px;
     vertical-align: middle;
     border-radius: 20px;
     margin-bottom: 60px;
-    background-color: rgb(126, 183, 218);
-    box-shadow: 0px 0px 1px;
+    background-color: rgb(104, 244, 125);
+    box-shadow: 0px 0px 4px rgb(104, 244, 125);
+    border: 0px;
+}
+
+#submitChange:hover {
+    margin-left: 30px;
+    width: 100px;
+    height: 30px;
+    vertical-align: middle;
+    border-radius: 20px;
+    margin-bottom: 60px;
+    background-color: rgb(64, 241, 90);
+    background-color: rgb(64, 241, 90);
+    border: 0px;
 }
 
 </style>

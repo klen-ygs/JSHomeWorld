@@ -59,9 +59,10 @@ export default {
                 },
                 withCredentials:true,
             }).then( () => {
-                this.$router.replace({path:"/"})
+                this.$router.replace({
+                name:"loginPage",
             })
-
+            })
         },
         enterLists() {
             this.enterList = true
@@ -73,13 +74,16 @@ export default {
                     this.ShowList = true
                     this.$refs.littleList.show()
                     let size = 30
+                    let margin_right = 20
                     let ShopCar = this.$refs.ShopCar
                     this.smallChaning = false
                     setTimeout( function shopCarBig() {
                         size++
+                        margin_right--
                         if (size <= 40 && _this.enterList == true) {
                             ShopCar.style["width"] = String(size) + "px"
                             ShopCar.style["height"] = String(size) + "px"
+                            ShopCar.style["margin-right"] = String(margin_right) + "px"
                             setTimeout(shopCarBig, 5)
                         }
                     }, 5)
@@ -95,13 +99,16 @@ export default {
                     this.ShowList = false
                     let _this = this
                     let size = 40
+                    let margin_right = 10
                     let ShopCar = this.$refs.ShopCar
                     this.bigChaning = false
                     setTimeout( function shopCarSamll() {
                         size--
+                        margin_right++
                         if (size >= 30 && _this.enterList == false) {
                             ShopCar.style["width"] = String(size) + "px"
                             ShopCar.style["height"] = String(size) + "px"
+                            ShopCar.style["margin-right"] = String(margin_right) + "px"
                             setTimeout(shopCarSamll, 5)
                         }
                     }, 5)
@@ -151,13 +158,14 @@ export default {
 }
 
 #ShopCar {
-    margin-left: 70%;
+    margin-left: 64%;
+    margin-right: 20px;
     cursor: pointer;
-    margin-top: 15px;
+    margin-top: 20px;
     vertical-align: middle;
     width: 30px;
     height: 30px;
-    display: inline-block;
+    float: left;
     background-image: url(../assets/shopcar.png);
     background-size: 100% 100%;
     background-repeat: no-repeat;

@@ -17,7 +17,7 @@
       </div>
       <div v-show="!onSearch" id="hotPoint">
         <div style=" width=100%; height: 40px; text-align: center; font-size: 20px; color:rgb(229, 91, 88); border-bottom: 2px groove black; padding-top: 10px;">热搜榜</div>
-        <div v-for="(select, index) in hotSelect" :key="select" class="hotSelect"  @click="searchFromHotPoint(select.SearchText)">
+        <div v-for="(select, index) in hotSelect" :key="index" class="hotSelect"  @click="searchFromHotPoint(select.SearchText)">
             <span style="color: orange">{{index + 1}}</span> {{"  " +select.SearchText}}
         </div>
     </div>
@@ -121,8 +121,12 @@ export default {
 
         },
        searchFromHotPoint(name) {
-            this.$refs.selectInput.setSearchWord(name)
-            this.$refs.selectInput.search()
+            this.$router.push({
+                path:"/selected",
+                query: {
+                    search: name
+                }
+            })
         }
     },
     mounted() {

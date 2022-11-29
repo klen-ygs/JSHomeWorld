@@ -42,7 +42,7 @@ func accessOrigin(url string) {
 		context.Writer.Header().Add("Access-Control-Allow-Headers", "Content-Type,XFILENAME,XFILECATEGORY,XFILESIZE")
 		context.Writer.Header().Add("Access-Control-Allow-Origin", "http://localhost:8080")
 		context.Writer.Header().Add("Access-Control-Allow-Credentials", "true")
-		context.Writer.Header().Add("Access-Control-Allow-Methods", "true")
+		context.Writer.Header().Add("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE")
 	})
 
 }
