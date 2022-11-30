@@ -12,7 +12,7 @@ import (
 // 提供前端登录接口
 func init() {
 	Engine.POST("/login", func(context *gin.Context) {
-		context.Writer.Header().Add("Access-Control-Allow-Origin", "http://localhost:8080")
+		context.Writer.Header().Add("Access-Control-Allow-Origin", CORS)
 		context.Writer.Header().Add("Access-Control-Allow-Credentials", "true")
 		context.SetSameSite(http.SameSiteNoneMode)
 		var User DaoModle.User
@@ -24,7 +24,7 @@ func init() {
 			})
 			return
 		}
-		context.SetCookie("login", strconv.FormatUint(loginCount, 10), 100000, "/", "http://localhost:8080", true, false)
+		context.SetCookie("login", strconv.FormatUint(loginCount, 10), 100000, "/", StaticURL, true, false)
 		phoneMap.Store(loginCount, User.Phone)
 		countMap.Store(User.Phone, loginCount)
 		loginCount++
@@ -44,7 +44,7 @@ func init() {
 	})
 	accessOrigin("/login")
 	Engine.DELETE("/login", func(context *gin.Context) {
-		context.Writer.Header().Add("Access-Control-Allow-Origin", "http://localhost:8080")
+		context.Writer.Header().Add("Access-Control-Allow-Origin", CORS)
 		context.Writer.Header().Add("Access-Control-Allow-Credentials", "true")
 		context.Writer.Header().Add("Access-Control-Allow-Methods", "DELETE")
 		user := DaoModle.User{}
@@ -62,7 +62,7 @@ func init() {
 		}
 		countMap.Delete(user.Phone)
 		phoneMap.Delete(count)
-		context.SetCookie("login", "", -1, "/", "http://127.0.0.1:8080", true, false)
+		context.SetCookie("login", "", -1, "/", StaticURL, true, false)
 	})
 
 }

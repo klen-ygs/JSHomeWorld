@@ -9,7 +9,7 @@ import (
 func init() {
 
 	Engine.GET("/shopChoose", func(context *gin.Context) {
-		context.Writer.Header().Add("Access-Control-Allow-Origin", AJAXOrigin)
+		context.Writer.Header().Add("Access-Control-Allow-Origin", CORS)
 		choose := DaoModle.ShopChoose{}
 		err := context.ShouldBindQuery(&choose)
 		if err != nil {
@@ -31,7 +31,7 @@ func init() {
 	})
 
 	Engine.POST("/shopChoose", func(context *gin.Context) {
-		context.Writer.Header().Add("Access-Control-Allow-Origin", AJAXOrigin)
+		context.Writer.Header().Add("Access-Control-Allow-Origin", CORS)
 		choose := DaoModle.ShopChoose{}
 		err := context.BindJSON(&choose)
 		if err != nil {

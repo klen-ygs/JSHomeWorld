@@ -6,13 +6,16 @@
         <div id="ShopTitleTextDiv">
             {{ ShopTitleText }}
         </div>
+        <div style="display: inline-block; vertical-align: top; margin-top: 40px; width: 50px; font-size: 20px; color: orange;">
+            {{Choise}}  
+        </div>
         <div style="display: inline-block; vertical-align: top; margin-top: 40px;">
             <button id="shopSubButton" ref="shopSubButton" @click.stop="subPayNum()">-</button>
             <span><input type="text" @click.stop="0" v-model.number="InputPayNum" style="width: 60px; height: 26px; margin-left: 5px; margin-right: 5px; outline: none;background-color: rgb(242, 242, 242); border: 1px solid gray; text-align: center; border-radius: 3px; font-size: 15px;"></span>
             <button id="shopAddButton" ref="shopAddButton" @click.stop="addPayNum()">+</button>
         </div>
         <div id="PriceDiv">
-            ￥{{ Price }}
+            ￥{{ totlePrice }}
         </div>
         <button id="deleteButton" @click.stop="deleteTip()">删除</button>
         <button v-show="changePayNum" id="submitChange" @click.stop="saveChange()">保存修改</button>
@@ -30,6 +33,17 @@ export default {
             Having: 0,
             changePayNum: false,
             totlePrice: 0,
+        }
+    },
+    watch: {
+        InputPayNum(newval, oldval) {
+            if (newval < 0) {
+                this.InputPayNum = 0
+            }
+            this.$store.commit("subPrice", oldval * this.Price)
+            this.$store.commit("addPrice", newval * this.Price)
+            this.totlePrice = this.InputPayNum * this.Price
+
         }
     },
     mounted() {
@@ -205,7 +219,7 @@ export default {
     margin-left: 20px;
     font-size: 30px;
     vertical-align: middle;
-    margin-bottom: 60px;
+    margin-bottom: 70px;
 }
 
 #tipImageDiv {
@@ -220,7 +234,7 @@ export default {
     height: 30px;
     vertical-align: middle;
     border-radius: 20px;
-    margin-bottom: 60px;
+    margin-bottom: 70px;
     background-color: rgb(196, 227, 246);
     box-shadow: 0px 0px 2px rgb(196, 227, 246);
     border: 0px ;
@@ -233,7 +247,7 @@ export default {
     height: 30px;
     vertical-align: middle;
     border-radius: 20px;
-    margin-bottom: 60px;
+    margin-bottom: 70px;
     background-color: rgb(126, 183, 218);
     box-shadow: 0px 0px 4px rgb(126, 183, 218);
 }
@@ -245,7 +259,7 @@ export default {
     height: 30px;
     vertical-align: middle;
     border-radius: 20px;
-    margin-bottom: 60px;
+    margin-bottom: 70px;
     background-color: rgb(104, 244, 125);
     box-shadow: 0px 0px 4px rgb(104, 244, 125);
     border: 0px;
@@ -257,7 +271,7 @@ export default {
     height: 30px;
     vertical-align: middle;
     border-radius: 20px;
-    margin-bottom: 60px;
+    margin-bottom: 70px;
     background-color: rgb(64, 241, 90);
     background-color: rgb(64, 241, 90);
     border: 0px;

@@ -1,0 +1,8 @@
+port: 8000
+ip: 127.0.0.1
+CORS: http://localhost:8080
+StaticURL: http://127.0.0.1:8080 #静态资源地址
+MysqlURL: 127.0.0.1:3306
+DataBase: vue_shop
+DataBaseUser: klen
+DataBasePassword: 123456789

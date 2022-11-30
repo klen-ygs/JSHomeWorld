@@ -44,7 +44,7 @@ func addAImage(context *gin.Context) {
 func init() {
 
 	Engine.POST("/addImage", func(context *gin.Context) {
-		context.Writer.Header().Add("Access-Control-Allow-Origin", "http://localhost:8080")
+		context.Writer.Header().Add("Access-Control-Allow-Origin", CORS)
 		addAImage(context)
 	})
 	accessOrigin("/addImage")

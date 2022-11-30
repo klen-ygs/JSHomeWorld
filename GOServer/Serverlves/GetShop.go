@@ -24,7 +24,7 @@ func getFirstPage(context *gin.Context) {
 
 func init() {
 	Engine.GET("/getShop", func(context *gin.Context) {
-		context.Writer.Header().Add("Access-Control-Allow-Origin", "http://localhost:8080")
+		context.Writer.Header().Add("Access-Control-Allow-Origin", CORS)
 		request := getShopRequest{}
 		err := context.BindQuery(&request)
 		if err != nil {
