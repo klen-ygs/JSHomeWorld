@@ -11,7 +11,7 @@ func init() {
 	var mutex = sync.Mutex{}
 
 	Engine.POST("/addShop", func(context *gin.Context) {
-		context.Writer.Header().Add("Access-Control-Allow-Origin", "http://localhost:8080")
+		context.Writer.Header().Add("Access-Control-Allow-Origin", CORS)
 		newShop := DaoModle.Shop{}
 		err := context.BindJSON(&newShop)
 		if err != nil {

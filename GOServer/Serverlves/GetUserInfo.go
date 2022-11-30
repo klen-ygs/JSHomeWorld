@@ -10,7 +10,7 @@ import (
 func init() {
 
 	Engine.GET("/getUserInfo", func(context *gin.Context) {
-		context.Writer.Header().Add("Access-Control-Allow-Origin", "http://localhost:8080")
+		context.Writer.Header().Add("Access-Control-Allow-Origin", CORS)
 		context.Writer.Header().Add("Access-Control-Allow-Credentials", "true")
 		cookie, err := context.Cookie("login")
 		if err != nil {

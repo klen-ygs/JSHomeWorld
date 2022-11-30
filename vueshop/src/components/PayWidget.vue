@@ -1,7 +1,7 @@
 <template>
   <div id="payDiv" ref="PayDiv" @click="closePay()">
     <div id="payPage" v-show="showPay" @click.stop="">
-        <div id="ChoosePayDiv">
+        <div id="ChoosePayDiv" ref="ChoosePayDiv">
 
             <div style="height: 40px"></div>
             <span style="font-size: 20px; margin-left: 40px;">微信支付</span>
@@ -41,7 +41,8 @@ export default {
             setTimeout( function closing() {
                 op -= 0.02
                 if (op > 0) {
-                    PayDiv.style["opacity"] = String(op)
+
+                    PayDiv.style["background-color"] = `rgba(0,0,0,${op})`
                     setTimeout(closing, 20)
                 } else {
                     _this.closeEvet()
@@ -53,11 +54,12 @@ export default {
             let op = 0
             setTimeout(() => {
                 this.showPay = true
+                this.$refs.ChoosePayDiv.style["background-color"] = "rgb(255,255,255)"
             }, 120)
             setTimeout( function showing() {
                 op += 0.02
                 if (op < 0.5) {
-                    PayDiv.style["opacity"] = String(op)
+                    PayDiv.style["background-color"] = `rgba(0,0,0,${op})`
                     setTimeout(showing, 20)
                 }
             }, 20)
@@ -100,13 +102,12 @@ export default {
     position: fixed;
     width: 100%;
     height: 100%;
-    background-color: black;
-    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.5);
     z-index: 90;
 }
 
 #payPage {
-    position: fixed;
+    position: absolute;
     left: 26%;
     top: 30%;
     height: 400px;

@@ -9,7 +9,7 @@ import (
 
 func init() {
 	Engine.POST("/register", func(context *gin.Context) {
-		context.Writer.Header().Add("Access-Control-Allow-Origin", "http://localhost:8080")
+		context.Writer.Header().Add("Access-Control-Allow-Origin", CORS)
 		var User DaoModle.User
 		err := context.BindJSON(&User)
 		if err != nil {

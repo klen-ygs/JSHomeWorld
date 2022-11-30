@@ -188,7 +188,7 @@ func addVideo(context *gin.Context) {
 
 func init() {
 	Engine.GET("/video/:opt", func(context *gin.Context) {
-		context.Writer.Header().Add("Access-Control-Allow-Origin", "http://localhost:8080")
+		context.Writer.Header().Add("Access-Control-Allow-Origin", CORS)
 		param := context.Param("opt")
 		if param == "findVideo" {
 			findVideo(context)
@@ -199,7 +199,7 @@ func init() {
 		}
 	})
 	Engine.POST("/video/addVideo", func(context *gin.Context) {
-		context.Writer.Header().Add("Access-Control-Allow-Origin", "http://localhost:8080")
+		context.Writer.Header().Add("Access-Control-Allow-Origin", CORS)
 		addVideo(context)
 	})
 	accessOrigin("/video/:opt")

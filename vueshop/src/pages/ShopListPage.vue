@@ -35,6 +35,7 @@ export default {
   name:"ShopListPage",
   mounted() {
     this.Phone = this.$route.params.Phone
+    document.title = "购物车"
     this.getList()
   },
   data() {

@@ -1,6 +1,7 @@
 package Serverlves
 
 import (
+	"GOServer/Config"
 	"github.com/gin-gonic/gin"
 	"reflect"
 	"strconv"
@@ -12,7 +13,8 @@ import "github.com/jinzhu/gorm"
 var Engine *gin.Engine
 var DB *gorm.DB
 
-const AJAXOrigin = "http://localhost:8080"
+var CORS = Config.GetString("CORS")
+var StaticURL = Config.GetString("StaticURL")
 
 const (
 	PHONEERR     = "PhoneErr"
@@ -40,7 +42,7 @@ type response struct {
 func accessOrigin(url string) {
 	Engine.OPTIONS(url, func(context *gin.Context) {
 		context.Writer.Header().Add("Access-Control-Allow-Headers", "Content-Type,XFILENAME,XFILECATEGORY,XFILESIZE")
-		context.Writer.Header().Add("Access-Control-Allow-Origin", "http://localhost:8080")
+		context.Writer.Header().Add("Access-Control-Allow-Origin", CORS)
 		context.Writer.Header().Add("Access-Control-Allow-Credentials", "true")
 		context.Writer.Header().Add("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE")
 	})
@@ -62,9 +64,14 @@ func getPhone(ctx *gin.Context, value interface{}) {
 	phone.SetString(load.(string))
 }
 
+var DataBaseUser = Config.GetString("DataBaseUser")
+var Password = Config.GetString("DataBasePassword")
+var DataBaseURL = Config.GetString("DataBaseURL")
+var DataBase = Config.GetString("DataBase")
+
 func init() {
 	Engine = gin.Default()
-	db, err := gorm.Open("mysql", "root:28885/YGSnizhan@(127.0.0.1:3306)/vue_shop?charset=utf8mb4")
+	db, err := gorm.Open("mysql", DataBaseUser+":"+Password+"@("+DataBaseURL+")/"+DataBase+"?charset=utf8mb4")
 	DB = db
 	if err != nil {
 		panic(err)

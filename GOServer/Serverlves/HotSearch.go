@@ -34,7 +34,7 @@ func init() {
 	}()
 
 	Engine.GET("/hotSearch", func(context *gin.Context) {
-		context.Writer.Header().Add("Access-Control-Allow-Origin", "http://localhost:8080")
+		context.Writer.Header().Add("Access-Control-Allow-Origin", CORS)
 		context.JSON(http.StatusOK, &hotArr)
 	})
 }

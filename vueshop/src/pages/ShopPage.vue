@@ -10,7 +10,7 @@
                 <button ref="ToNext" id="toNextImageButton" @click="toNextImage()"><img src="../assets/forward.png" width="15px"></button>
             </div>
             <div id="shopInfo">
-                <div style="margin-top: 10px; margin-left:40px; font-size: 20px; color: black; height: 50px; width: 85%; background-color: rgb(184, 184, 184); padding: 10px 0px 0px 10px ;">
+                <div style="margin-top: 10px; margin-left:40px; font-size: 20px; color: black; height: 60px; width: 85%; background-color: rgb(184, 184, 184); padding: 10px 0px 0px 10px ;">
                     {{TitleText}}
                 </div>
                 <div style="margin-top:15px; margin-left:50px; font-size: 25px; color: brown;">

@@ -2,7 +2,7 @@
   <div id="SelectInputDiv">
       <div id="SelectInputBack">
           <input type="text" id="SelectInput" v-model="SearchWord">
-          <button id="SelectButton" @click="search()"><strong>搜索</strong></button>
+          <button id="SelectButton" @click="jumpToSearch()"><strong>搜索</strong></button>
       </div>
   </div>
 </template>
@@ -32,6 +32,14 @@ export default {
             for (let a = 0; a < this.searchListeners.length; a++) {
                 this.searchListeners[a]()
             }
+        },
+        jumpToSearch()  {
+            this.$router.push({
+                path:"/selected",
+                query: {
+                    search: this.SearchWord
+                }
+            })
         },
         addSearchListener(listener) {
             this.searchListeners.push(listener)

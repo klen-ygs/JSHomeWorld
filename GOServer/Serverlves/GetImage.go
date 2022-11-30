@@ -9,7 +9,7 @@ import (
 func init() {
 
 	Engine.GET("/getImages", func(context *gin.Context) {
-		context.Writer.Header().Add("Access-Control-Allow-Origin", "http://localhost:8080")
+		context.Writer.Header().Add("Access-Control-Allow-Origin", CORS)
 		type images struct {
 			ShopId uint64
 			Id     int
@@ -44,7 +44,7 @@ func init() {
 	})
 
 	Engine.GET("/getImage", func(context *gin.Context) {
-		context.Writer.Header().Add("Access-Control-Allow-Origin", "http://localhost:8080")
+		context.Writer.Header().Add("Access-Control-Allow-Origin", CORS)
 		image := DaoModle.Image{}
 		err := context.BindQuery(&image)
 		if err != nil {

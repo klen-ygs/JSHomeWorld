@@ -3,12 +3,15 @@
     <span id="littleImage">
         <img ref="tipImage" height="85%">
     </span>
-    <span id="LittleText">
+    <div id="LittleText">
         {{ ShopTitleText }}
-    </span>
-    <span id="LittlePrice">
+    </div>
+    <div style="display: inline-block; vertical-align: top; margin-top: 30px; width: 40px; overflow: hidden;">
+        {{Choise}}
+    </div>
+    <div id="LittlePrice">
         ￥{{ Price }}
-    </span>
+    </div>
   </div>
 </template>
 
@@ -45,8 +48,9 @@ export default {
         }
     },
     props: {
-        ShopId: Number
-
+        ShopId: Number,
+        PayNum: Number,
+        Choise: String,
     },
     methods: {
         JumpShop() {
@@ -75,13 +79,17 @@ export default {
     display: inline-block;
     font-size: 10px;
     text-align: center;
-    width: 30%;
-    vertical-align: middle;
+    width: 27%;
+    margin-top: 30px;
+    vertical-align: top;
     margin-right: 15px;
+    overflow: hidden;
 }
 
 #LittlePrice {
     display: inline-block;
+    vertical-align: top;
+    margin-top: 30px;
     font-size: 15px;
     color: rgb(191, 89, 89);
 }
