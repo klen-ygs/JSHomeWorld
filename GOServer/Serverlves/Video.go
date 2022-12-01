@@ -207,7 +207,7 @@ func getVideo(context *gin.Context) {
 	rep := "bytes "
 	rep += strconv.FormatInt(seek, 10) + "-" + strconv.FormatInt(int64(len(file)-1), 10) + "/" + strconv.FormatInt(int64(len(file)), 10)
 	context.Writer.Header().Add("Content-Range", rep)
-	context.Data(200, "video/mp4", file)
+	context.Data(206, "video/mp4", file[seek:])
 }
 
 func addVideo(context *gin.Context) {
