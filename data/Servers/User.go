@@ -64,6 +64,28 @@ func init() {
 			Err:     NONE,
 		})
 	})
+	Engine.DELETE("/login", func(context *gin.Context) {
+		context.Writer.Header().Add("Access-Control-Allow-Origin", CORS)
+		context.Writer.Header().Add("Access-Control-Allow-Credentials", "true")
+		context.Writer.Header().Add("Access-Control-Allow-Methods", "DELETE")
+		user := DaoModle.User{}
+		err := context.ShouldBind(&user)
+		if err != nil {
+			context.JSON(http.StatusOK, response{
+				Request: false,
+				Err:     MODLEERR,
+			})
+			return
+		}
+		count, ok := countMap.Load(user.Phone)
+		if !ok {
+			return
+		}
+		countMap.Delete(user.Phone)
+		phoneMap.Delete(count)
+		context.SetCookie("login", "", -1, "/", StaticURL, true, false)
+	})
+
 	accessOrigin("/login")
 
 	Engine.POST("/register", func(context *gin.Context) {

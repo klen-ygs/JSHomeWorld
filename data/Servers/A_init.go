@@ -2,6 +2,7 @@ package Servers
 
 import (
 	"data/Config"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"reflect"
 	"strconv"
@@ -46,6 +47,10 @@ func accessOrigin(url string) {
 }
 
 func getPhone(ctx *gin.Context, value interface{}) {
+	defer func() {
+		recover()
+		fmt.Println("用户未登录")
+	}()
 	elem := reflect.ValueOf(value).Elem()
 	phone := elem.FieldByName("Phone")
 	if phone.String() != "" {
@@ -60,6 +65,11 @@ func getPhone(ctx *gin.Context, value interface{}) {
 	phone.SetString(load.(string))
 }
 func init() {
+	gin.SetMode("release")
 	engine := gin.Default()
+	err := engine.SetTrustedProxies(nil)
+	if err != nil {
+		panic(err)
+	}
 	Engine = engine
 }

@@ -32,6 +32,8 @@ func getFirstBySearch(searchWord string) DaoModle.ShopSlice {
 	for i, _ := range shops {
 		if strings.Index(shops[i].ShopTitleText, searchWord) != -1 {
 			tarArr = append(tarArr, shops[i])
+		} else if searchWord == "" {
+			tarArr = append(tarArr, shops[i])
 		}
 		if len(tarArr) == 15 {
 			break
@@ -53,6 +55,8 @@ func findNext(id uint64, searchText string) DaoModle.ShopSlice {
 	for ; lastIdx < len(shops) && len(tarArr) < 15; lastIdx++ {
 		if strings.IndexAny(shops[lastIdx].ShopTitleText, searchText) != -1 {
 			tarArr = append(tarArr, shops[lastIdx])
+		} else if searchText == "" {
+			tarArr = append(tarArr, shops[lastIdx])
 		}
 	}
 	return tarArr
@@ -62,6 +66,8 @@ func findLast(id uint64, searchText string) DaoModle.ShopSlice {
 	tarArr := make(DaoModle.ShopSlice, 0)
 	for i := 0; id != shops[i].Id; i++ {
 		if strings.IndexAny(shops[i].ShopTitleText, searchText) != -1 {
+			tarArr = append(tarArr, shops[i])
+		} else if searchText == "" {
 			tarArr = append(tarArr, shops[i])
 		}
 		if len(tarArr) > 15 {

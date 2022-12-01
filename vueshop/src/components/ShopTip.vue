@@ -205,7 +205,7 @@ export default {
 #ShopTitleTextDiv {
     margin-left: 10px;
     display: inline-block;
-    width: 500px;
+    width: 400px;
     height: 20px;
     margin-bottom: 60px;
     vertical-align: middle;
