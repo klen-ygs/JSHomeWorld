@@ -6,9 +6,17 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 )
 
 func getVideo(context *gin.Context) {
+	RangeStr := context.GetHeader("Range")
+	if len(RangeStr) == 1 { // 用普通Get请求
+		RangeStr = "bytes=0-"
+	}
+	RangeNum := strings.Split(RangeStr, "=")[1]
+	RangeIdx := strings.Split(RangeNum, "-")[0]
+	seek, _ := strconv.ParseInt(RangeIdx, 10, 64)
 	path := context.Query("path")
 	file, err := os.ReadFile(path)
 	if err != nil {
@@ -18,7 +26,10 @@ func getVideo(context *gin.Context) {
 		})
 		return
 	}
-	context.Data(200, "video/mp4", file)
+	rep := "bytes "
+	rep += strconv.FormatInt(seek, 10) + "-" + strconv.FormatInt(int64(len(file)-1), 10) + "/" + strconv.FormatInt(int64(len(file)), 10)
+	context.Writer.Header().Add("Content-Range", rep)
+	context.Data(206, "video/mp4", file[seek:])
 }
 
 func init() {
