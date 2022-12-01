@@ -2,6 +2,7 @@ package Serverlves
 
 import (
 	"GOServer/Config"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"reflect"
 	"strconv"
@@ -50,6 +51,10 @@ func accessOrigin(url string) {
 }
 
 func getPhone(ctx *gin.Context, value interface{}) {
+	defer func() {
+		recover()
+		fmt.Println("用户未登录")
+	}()
 	elem := reflect.ValueOf(value).Elem()
 	phone := elem.FieldByName("Phone")
 	if phone.String() != "" {
@@ -70,7 +75,12 @@ var DataBaseURL = Config.GetString("DataBaseURL")
 var DataBase = Config.GetString("DataBase")
 
 func init() {
+	gin.SetMode("release")
 	Engine = gin.Default()
+	err := Engine.SetTrustedProxies(nil)
+	if err != nil {
+		panic(err)
+	}
 	db, err := gorm.Open("mysql", DataBaseUser+":"+Password+"@("+DataBaseURL+")/"+DataBase+"?charset=utf8mb4")
 	DB = db
 	if err != nil {

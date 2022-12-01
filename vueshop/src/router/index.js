@@ -20,7 +20,7 @@ export default new vueRouter({
             component:SelectPage,
         },
         {
-            path:"/addShop",
+            path:"/AddShop",
             component:AddShopPage,
         },
         {

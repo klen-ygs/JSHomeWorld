@@ -109,7 +109,7 @@ export default {
             this.$refs.recommedList[this.chooseRecommed].style["background-color"] = ""
             this.chooseRecommed = index
             this.$refs.recommedList[index].style["background-color"] = "rgb(238, 80, 48)"
-            this.$refs.recommendImg.src = name + ".png"
+            this.$refs.recommendImg.style["background-image"] =   `url(static/${name}.png)`
         },
         getHotSelect() {
             axios({
@@ -151,14 +151,10 @@ export default {
             })
             this.$refs.toLastPage.disabled= "disabled"
             this.getHotSelect()
-            let _this = this
-            setTimeout(function getHot() {
-                _this.getHotSelect()
-                setTimeout(getHot, 10000)
-            }, 10000)
             this.$refs.selectInput.addSearchListener(()=> {
                 this.onSearch = true
             })
+            this.enterRecommed(0, "衣服")
     },
     data() {
         return {

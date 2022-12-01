@@ -4,7 +4,7 @@
         <div id="box"></div>
         <div id="ShopBack">
             <div id="ShopImagesDiv" ref="ShopImage" > 
-                <video v-show="showVideo" ref="shopVideo" id="shopVideo" controls="controls" preload=" auto" width="85%">
+                <video v-show="showVideo" ref="shopVideo" id="shopVideo" controls="controls" preload=" metadata" width="85%">
                 </video>
                 <button ref="ToLast" id="toLastImageButton" @click="toLastImage()"><img  id="leftForward" src="../assets/forward.png" width="15px"></button>
                 <button ref="ToNext" id="toNextImageButton" @click="toNextImage()"><img src="../assets/forward.png" width="15px"></button>
@@ -277,10 +277,10 @@ export default {
             Having: 0,
             TitleText: "",
             showPay: false,
-            Addr:"衡阳事",
+            Addr:"衡阳",
             PayNum: 0,
-            chooseTip:"66",
-            chooseTipList: ["white","black","666"],
+            chooseTip:"无",
+            chooseTipList: [],
             choise:"",
             moreInfoShow: false,
             addListACShow: false 
