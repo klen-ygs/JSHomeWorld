@@ -18,7 +18,7 @@
                 </div>
                 <div id="moreInfo" ref="moreInfo" @mouseenter="mouseEnterMoreInfo()" @mouseleave="mouseLeaveMoreInfo()">
                     详情
-                    <div v-show="moreInfoShow" style="width:500px; height: 200px; position: absolute; background-color: rgb(248, 248, 248); top: 300px; box-shadow: 0 0 4px gray;border-radius: 5px;">
+                    <div v-show="moreInfoShow" style="width:500px; min-height: 200px; position: absolute; background-color: rgb(248, 248, 248); top: 300px; box-shadow: 0 0 4px gray;border-radius: 5px;">
                         {{Text}}
                     </div>
                 </div>

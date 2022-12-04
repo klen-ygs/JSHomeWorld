@@ -84,6 +84,7 @@ export default {
     vertical-align: top;
     margin-right: 15px;
     overflow: hidden;
+    height: 30px;
 }
 
 #LittlePrice {
